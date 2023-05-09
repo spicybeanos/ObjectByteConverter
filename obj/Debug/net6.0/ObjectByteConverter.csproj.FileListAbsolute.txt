@@ -1,0 +1,15 @@
+C:\Users\AryanD\C#\ObjectByteConverter\bin\Debug\net6.0\ObjectByteConverter.exe
+C:\Users\AryanD\C#\ObjectByteConverter\bin\Debug\net6.0\ObjectByteConverter.deps.json
+C:\Users\AryanD\C#\ObjectByteConverter\bin\Debug\net6.0\ObjectByteConverter.runtimeconfig.json
+C:\Users\AryanD\C#\ObjectByteConverter\bin\Debug\net6.0\ObjectByteConverter.dll
+C:\Users\AryanD\C#\ObjectByteConverter\bin\Debug\net6.0\ObjectByteConverter.pdb
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.csproj.AssemblyReference.cache
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.AssemblyInfoInputs.cache
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.AssemblyInfo.cs
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.csproj.CoreCompileInputs.cache
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.dll
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\refint\ObjectByteConverter.dll
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.pdb
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ObjectByteConverter.genruntimeconfig.cache
+C:\Users\AryanD\C#\ObjectByteConverter\obj\Debug\net6.0\ref\ObjectByteConverter.dll
