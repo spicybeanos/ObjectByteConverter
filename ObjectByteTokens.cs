@@ -23,7 +23,7 @@ namespace ObjectByteConverter
             }
         }
     }
-    public enum ByteToken
+    public enum ByteToken : byte
     {
         SHA1Check = 255,
         IdentifierName = 1,
@@ -39,6 +39,7 @@ namespace ObjectByteConverter
         Shorts,
         Bytes,
         Strings,
+        Compound,
     }
 
     public class Token

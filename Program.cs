@@ -13,14 +13,21 @@ class Program
         //Console.WriteLine(JsonSerializer.Serialize(b));
         ObjectDesializer des = new ObjectDesializer(b);
         var d = des.Decode();
+        Console.WriteLine(JsonSerializer.Serialize(d));
+        Console.WriteLine($"{nameof(v.x)}");
+        
     }
 }
 
-public class V
+public class V : C
+{
+    public string str { get; set; }
+    public int[] ints { get; set; }
+}
+
+public class C
 {
     public int x { get; set; }
     public int y { get; set; }
     public int z { get; set; }
-    public string str { get; set; }
-    public int[] ints { get; set; }
 }

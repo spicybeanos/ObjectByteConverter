@@ -24,10 +24,17 @@ namespace ObjectByteConverter
             WriteLiteral(className);
             foreach (var property in properties)
             {
-                WriteLiteral((byte)ByteToken.IdentifierName);
-                WriteLiteral(property.Name);
-                WriteLiteral((byte)Token.DataType[property.PropertyType]);
-                Write(property.GetValue(obj));
+                if (Token.DataType.ContainsKey(property.PropertyType))
+                {
+                    WriteLiteral((byte)ByteToken.IdentifierName);
+                    WriteLiteral(property.Name);
+                    WriteLiteral((byte)Token.DataType[property.PropertyType]);
+                    Write(property.GetValue(obj));
+                }
+                else{
+                    //impliment compund deserialization
+                    throw new Exception($"Unsupported type : {property.PropertyType.ToString()}");                    
+                }
             }
             return buffer;
         }
@@ -160,13 +167,6 @@ namespace ObjectByteConverter
                 WriteLiteral(item);
             }
         }
-        List<byte> GenerateBytes(string val)
-        {
-            List<byte> ret = new List<byte>();
-            ret.AddRange(Encoding.Unicode.GetBytes(val));
-            ret.AddRange(BitConverter.GetBytes((short)0));
-            return ret;
-        }
         void WriteLiteral(ICollection<string> val)
         {
             WriteLiteral(val.Count());
@@ -174,6 +174,9 @@ namespace ObjectByteConverter
             {
                 WriteLiteral(item);
             }
+        }
+        void WriteLiteral<T,K>(IDictionary<T,K> val){
+            
         }
     }
 }
