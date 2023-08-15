@@ -8,6 +8,7 @@ namespace ObjectByteConverter
 {
     public enum ByteToken
     {
+        EOF=255,
         IdentifierName = 1,
         SHA1Check,
         Int,

@@ -8,21 +8,21 @@ using System.Linq;
 
 namespace ObjectByteConverter
 {
-    public class ObjectDesializer
+    public class Desializer
     {
         private List<byte> buffer { get; set; }
         private int pointer { get; set; }
         public int DatagramLength { get; private set; }
         public delegate int LengthReader();
         public LengthReader ReadLength;
-        public ObjectDesializer(ICollection<byte> bytes)
+        public Desializer(ICollection<byte> bytes)
         {
             pointer = 0;
             buffer = new List<byte>();
             buffer.AddRange(bytes);
             ReadLength = () =>
             {
-                return (int)ReadUShort();
+                return ReadUShort();
             };
         }
         public Result<Exception> Deserialize<T>(ref T obj, int start = 0)
@@ -109,7 +109,7 @@ namespace ObjectByteConverter
                 return new Result(ex);
             }
         }
-        
+
         public Result<Dictionary<string, object>> Decode(int start = 0)
         {
             try
@@ -156,9 +156,9 @@ namespace ObjectByteConverter
             var res = Decode();
             if (res.Success)
             {
-                if (res.Value.ContainsKey(ObjectSerializer.ClassName))
+                if (res.Value.ContainsKey(Serializer.ClassName))
                 {
-                    return new Result<string>(true, (string)res.Value[ObjectSerializer.ClassName]);
+                    return new Result<string>(true, (string)res.Value[Serializer.ClassName]);
                 }
                 return new Result<string>(false, "Data does not specify class name.");
             }
@@ -231,9 +231,9 @@ namespace ObjectByteConverter
             var res = Decode();
             if (res.Success)
             {
-                if (res.Value.ContainsKey(ObjectSerializer.ShaVerified))
+                if (res.Value.ContainsKey(Serializer.ShaVerified))
                 {
-                    return (bool)res.Value[ObjectSerializer.ShaVerified];
+                    return (bool)res.Value[Serializer.ShaVerified];
                 }
             }
             return false;
@@ -243,19 +243,19 @@ namespace ObjectByteConverter
             var res = Decode();
             if (res.Success)
             {
-                if (res.Value.ContainsKey(ObjectSerializer.ShaVerified))
+                if (res.Value.ContainsKey(Serializer.ShaVerified))
                 {
-                    if ((bool)res.Value[ObjectSerializer.ShaVerified])
+                    if ((bool)res.Value[Serializer.ShaVerified])
                     {
-                        if (res.Value.ContainsKey(ObjectSerializer.ShaVerificationCode))
+                        if (res.Value.ContainsKey(Serializer.ShaVerificationCode))
                         {
-                            return new Result<string>(true, (string)res.Value[ObjectSerializer.ShaVerificationCode]);
+                            return new Result<string>(true, (string)res.Value[Serializer.ShaVerificationCode]);
                         }
-                        return new Result<string>(false, $"{ObjectSerializer.ShaVerificationCode} not found.");
+                        return new Result<string>(false, $"{Serializer.ShaVerificationCode} not found.");
                     }
-                    return new Result<string>(false, $"Data is not hashed verified.{ObjectSerializer.ShaVerified} is false.");
+                    return new Result<string>(false, $"Data is not hashed verified.{Serializer.ShaVerified} is false.");
                 }
-                return new Result<string>(false, $"{ObjectSerializer.ShaVerified} not found.");
+                return new Result<string>(false, $"{Serializer.ShaVerified} not found.");
             }
             return new Result<string>(false, "Decoding failed.");
         }
@@ -332,6 +332,43 @@ namespace ObjectByteConverter
             }
             return false;
         }
+
+        public List<byte> SubArray(int from, int end)
+        {
+            if (end < 0)
+            {
+                return null;
+            }
+            List<byte> r = new List<byte>();
+            for (int i = from; i < buffer.Count && i < end; i++)
+            {
+                r.Add(buffer[i]);
+            }
+            return r;
+        }
+
+        public Result<List<Desializer>> Partition()
+        {
+            try
+            {
+                pointer = 0;
+                int start = 0;
+                List<Desializer> des = new List<Desializer>();
+                while (pointer < buffer.Count)
+                {
+                    ByteToken t = ReadByteToken();
+                    if (t == ByteToken.EOF)
+                    {
+                        List<byte> r = SubArray(start,pointer);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new Result(ex);
+            }
+        }
+
 
         int ReadInt()
         {

@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace ObjectByteConverter
 {
-    public class ObjectSerializer
+    public class Serializer
     {
         public const string ClassName = "$CN";
         public const string DatagramLength = "$DL";
@@ -19,7 +19,7 @@ namespace ObjectByteConverter
         public bool VerifyWhenSerializing { get; set; }
         public delegate void LengthWriter(int length);
         public LengthWriter WriteLength;
-        public ObjectSerializer(bool verifyWhenSerializing = true)
+        public Serializer(bool verifyWhenSerializing = true)
         {
             Buffer = new List<byte>();
             VerifyWhenSerializing = verifyWhenSerializing;
@@ -85,6 +85,7 @@ namespace ObjectByteConverter
                 WriteLiteral((byte)Token.DataType[values[var].GetType()]);
                 Write(values[var], type_);
             }
+            WriteLiteral((byte)ByteToken.EOF);
             return Buffer.ToArray();
         }
         void Write(object obj, ByteToken type)

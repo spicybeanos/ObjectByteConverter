@@ -7,7 +7,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        ObjectSerializer ser = new();
+        Serializer ser = new();
         V v = new();
         var bts  = ser.SerializeProperties(v);
         Console.WriteLine("Length after serializing : {0}",bts.Length);
