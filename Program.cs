@@ -10,7 +10,9 @@ class Program
         Serializer ser = new();
         V v = new();
         var bts  = ser.SerializeProperties(v);
+        var des = new Desializer(bts);
         Console.WriteLine("Length after serializing : {0}",bts.Length);
+        Console.WriteLine($"Dump : {des.Dump().Value}");
     }
 }
 

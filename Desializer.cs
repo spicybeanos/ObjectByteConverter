@@ -50,7 +50,7 @@ namespace ObjectByteConverter
                 return new Result<Exception>(false, ex);
             }
         }
-        public Result<string> Mogus()
+        public Result<string> Dump()
         {
             try
             {
@@ -67,7 +67,7 @@ namespace ObjectByteConverter
                 }
                 else
                 {
-                    return new Result<string>(false, $"Could not get the objects ecoded : {r__.Value[0]}");
+                    return new Result<string>(false, $"Could not get the objects ecoded : {r__.exception}");
                 }
             }
             catch (Exception ex)
@@ -78,9 +78,9 @@ namespace ObjectByteConverter
         }
         private Result<List<object>> DeTape()
         {
+            pointer = 0;
             try
             {
-                pointer = 0;
                 List<object> ret = new();
                 while (pointer < buffer.Count)
                 {
@@ -106,7 +106,7 @@ namespace ObjectByteConverter
             }
             catch (Exception ex)
             {
-                return new Result(ex);
+                return new Result(new Exception($"Exception at pointer {pointer} : {ex}"));
             }
         }
 
@@ -359,15 +359,20 @@ namespace ObjectByteConverter
                     ByteToken t = ReadByteToken();
                     if (t == ByteToken.EOF)
                     {
-                        List<byte> r = SubArray(start,pointer);
+                        List<byte> r = SubArray(start, pointer);
+                        des.Add(new Desializer(r));
+                        start = pointer + 1;
                     }
                 }
+                return new Result<List<Desializer>>(true,des);
             }
             catch (Exception ex)
             {
                 return new Result(ex);
             }
         }
+
+
 
 
         int ReadInt()
