@@ -55,42 +55,13 @@ namespace ObjectByteConverter
         {
             return new byte[] { val };
         }
-        byte[] WriteLiteral(sbyte val)
+        byte[] WriteLiteral<T>(T val)
         {
-            return BitConverter.GetBytes(val);
+            BitConverter.GetBytes(val);
+
+            return typeof(T) 
         }
-        byte[] WriteLiteral(short val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(ushort val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(int val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(uint val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(long val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(ulong val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(float val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(double val)
-        {
-            return BitConverter.GetBytes(val);
-        }
+
         public byte[] WriteString(string val)
         {
             List<byte> r = new List<byte>();
@@ -106,54 +77,15 @@ namespace ObjectByteConverter
             return r.ToArray();
         }
 
-        byte[] WriteLiteral(IEnumerable<byte> val)
+        byte[] WriteLiteral<T>(ICollection<T> val)
         {
-            List<byte> r= new();
+            List<byte> r = new();
             r.AddRange(LengthWriter(val.Count));
-            r.AddRange(val);
-            return r.ToArray();
-        }
-        byte[] WriteLiteral(ICollection<sbyte> val)
-        {
-            List<byte> r= new();
-            r.AddRange(LengthWriter(val));
-            for (int i = 0; i < val.Count; i++)
+            foreach (var v in val)
             {
-                r.AddRange(WriteLiteral(val[i]));
+                r.AddRange(WriteLiteral(v));
             }
             return r.ToArray();
-        }
-        byte[] WriteLiteral(short val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(ushort val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(int val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(uint val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(long val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(ulong val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(float val)
-        {
-            return BitConverter.GetBytes(val);
-        }
-        byte[] WriteLiteral(double val)
-        {
-            return BitConverter.GetBytes(val);
         }
 
     }
