@@ -4,7 +4,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 
-namespace ObjectByteConverter
+namespace ByteConverter
 {
     public enum ByteToken
     {

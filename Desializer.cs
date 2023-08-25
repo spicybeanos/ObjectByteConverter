@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ObjectByteConverter
+namespace ByteConverter
 {
     public class Desializer
     {

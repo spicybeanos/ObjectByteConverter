@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text;
-using ObjectByteConverter;
+using ByteConverter;
 using System.ComponentModel.DataAnnotations;
 
 class Program
@@ -12,7 +12,7 @@ class Program
         Serializer s = new();
         string str = "$CN";
         var b1 = s.WriteString_UTF8(str);
-        var b3 = s.WriteString(str);
+        var b3 = s.WriteString_Unicode(str);
         var b4 = s.Meta_WriteString(str);
         Console.WriteLine("UTF8   :"+ByteArrayToString(b1));
         Console.WriteLine("Unicode:"+ByteArrayToString(b3));
