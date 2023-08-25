@@ -9,7 +9,7 @@ namespace ObjectByteConverter
     public enum ByteToken
     {
         EOF=255,
-        IdentifierName = 1,
+        IdentifierName=1,
         SHA1Check,
         Int,
         UInt,
@@ -18,6 +18,7 @@ namespace ObjectByteConverter
         Short,
         UShort,
         Byte,
+        SByte,
         Float,
         Double,
         Bool,
@@ -49,6 +50,7 @@ namespace ObjectByteConverter
             {typeof(int),ByteToken.Int},
             {typeof(uint),ByteToken.UInt},
             {typeof(byte),ByteToken.Byte},
+            {typeof(sbyte),ByteToken.SByte},
             {typeof(short),ByteToken.Short},
             {typeof(ushort),ByteToken.UShort},
             {typeof(float),ByteToken.Float},
