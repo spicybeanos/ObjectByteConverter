@@ -4,19 +4,25 @@ using System.Text.Json;
 using System.Text;
 using ByteConverter;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 class Program
 {
     static void Main(string[] args)
     {
         Serializer s = new();
-        string str = "$CN";
-        var b1 = s.WriteString_UTF8(str);
-        var b3 = s.WriteString_Unicode(str);
-        var b4 = s.Meta_WriteString(str);
-        Console.WriteLine("UTF8   :"+ByteArrayToString(b1));
-        Console.WriteLine("Unicode:"+ByteArrayToString(b3));
-        Console.WriteLine("Meta   :"+ByteArrayToString(b4));
+        Test t = new(1,2,43);
+        string js = JsonSerializer.Serialize(t);
+        var b1 = s.Serialize(t);
+        int p = 0;
+        Console.WriteLine("UTF8   :" + ByteArrayToString(b1));
+        Console.WriteLine($"Json: {js}");
+        Console.WriteLine($"Json count : {js.Length}");
+        string cname = Desializer.GetClassName(b1,ref p);
+        Console.WriteLine($"Class name : {cname}");
+        p =0;
+        var k = Desializer.Deserialize<Test2>(b1,ref p);
+        Console.WriteLine($"Deserialized:{JsonSerializer.Serialize(k)}");
     }
     public static string ByteArrayToString(byte[] arrInput)
     {
@@ -29,16 +35,18 @@ class Program
         return sOutput.ToString();
     }
 }
-
-public class V : C
+public class Test
 {
-    public string str { get; set; }
-    public int[] ints { get; set; }
+    public int a { get; set; }
+    public int b { get; set; }
+    public int c { get; set; }
+    public Test(int a, int b, int c)
+    {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
 }
-
-public class C
-{
-    public int x { get; set; }
-    public int y { get; set; }
-    public int z { get; set; }
+public class Test2{
+    public string k {get;set;}
 }

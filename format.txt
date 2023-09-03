@@ -1,23 +1,3 @@
-<metainf>
-<data>
-
-in metainf:
-
-the Encoding will be utf8 for strings and end marked by '\0'
-
-ClassName:
- "$CN" + (str)className
-
-DatagramLength:
- "$DL" + (int)length
-
-ShaVerified :
- "$SV" + (bool)verified
-
-ShaVerificationCode:
- "$VC" + (byte[])sha1
-
-Length Reader :
- "$LR" + (ByteToken)reader
-
-EndOfMeta = "&0"
+<int>packet length
+<int>string length
+<bytes>utf8 encoding
