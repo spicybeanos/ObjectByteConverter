@@ -11,13 +11,23 @@ class Program
     static void Main(string[] args)
     {
         Serializer s = new();
-        Test t = new(1,2,43);
-        string js = JsonSerializer.Serialize(t);
-        var b1 = s.Serialize(t);
+        Test t1 = new(1,2,43);
+        Test t2 = new(3,54,-123);
+        string js1 = JsonSerializer.Serialize(t1),js2 = JsonSerializer.Serialize(t2);
+        var b1 = s.Serialize(t1);
+        var b2 = s.Serialize(t2);
+        List<byte> packet = new();
+        packet.AddRange(b1);
+        packet.AddRange(b2);
         int p = 0;
-        Console.WriteLine("UTF8   :" + ByteArrayToString(b1));
-        Console.WriteLine($"Json: {js}");
-        Console.WriteLine($"Json count : {js.Length}");
+        Console.WriteLine("UTF8   :" + ByteArrayToString(packet.ToArray()));
+        Console.WriteLine($"Json: {js1} {js2}");
+        Console.WriteLine($"Json count : {js1.Length}");
+        var @out = Desializer.DecodePacket(packet.ToArray());
+        foreach (var item in @out)
+        {
+            Console.WriteLine(item);
+        }
         string cname = Desializer.GetClassName(b1,ref p);
         Console.WriteLine($"Class name : {cname}");
         p =0;

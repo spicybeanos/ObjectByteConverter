@@ -67,6 +67,21 @@ namespace ByteConverter
                 return r;
             }
         }
+        public static List<string> DecodePacket(byte[] buff)
+        {
+            List<string> ret = new();
+            int pointer = 0;
+            while (pointer < buff.Length)
+            {
+                int index0 = pointer;
+                int pcktLen = ReadInt(buff, ref pointer);
+                string className = ReadUTF8(buff,ref pointer);
+                string json = ReadUTF8(buff,ref pointer);
+                ret.Add(className);
+                ret.Add(json);
+            }
+            return ret;
+        }
     }
 }
 
