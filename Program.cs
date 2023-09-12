@@ -9,19 +9,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Serializer s = new();
-        string str = "$CN";
-        var b1 = s.WriteString_UTF8(str);
-        var b3 = s.WriteString_Unicode(str);
-        var b4 = s.Meta_WriteString(str);
-
-        var h = GenSha.Sha1Hash(b1);
-
-        Console.WriteLine("UTF8   :"+ByteArrayToString(b1));
-        Console.WriteLine("Unicode:"+ByteArrayToString(b3));
-        Console.WriteLine("Meta   :"+ByteArrayToString(b4));
-        Console.WriteLine($"Hash length : {h.Length}");
-        Console.WriteLine("Hash : " + GenSha.ByteArrayToString(h));
+        
     }
     public static string ByteArrayToString(byte[] arrInput)
     {

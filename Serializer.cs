@@ -19,7 +19,7 @@ namespace ByteConverter
         public const string EndOfMeta = "&0M";
         public const string StructName = "%SN";
         public const string VariableCount = "%VC";
-        public ByteToken LengthSize { get; private set; }
+        public ByteToken LengthType { get; private set; }
         public delegate byte[] LWriter(object data);
         public delegate byte[] SWriter(string data);
         public LWriter LengthWriter { get; private set; }
@@ -30,7 +30,7 @@ namespace ByteConverter
         {
             LengthWriter = (object data) =>
             {
-                LengthSize = ByteToken.UShort;
+                LengthType = ByteToken.UShort;
                 return BitConverter.GetBytes((ushort)(int)data);
             };
             MetaInfLengthWriter = (object data) =>
@@ -41,7 +41,7 @@ namespace ByteConverter
         }
         public Serializer(ByteToken lengthSize, LWriter lengthWriter)
         {
-            LengthSize = lengthSize;
+            LengthType = lengthSize;
             LengthWriter = lengthWriter;
             MetaInfLengthWriter = (object data) =>
             {
@@ -59,7 +59,7 @@ namespace ByteConverter
         }
         public Serializer(ByteToken lengthSize, LWriter lengthWriter, SWriter stringWriter)
         {
-            LengthSize = lengthSize;
+            LengthType = lengthSize;
             LengthWriter = lengthWriter;
             MetaInfLengthWriter = (object data) =>
             {
@@ -145,7 +145,7 @@ namespace ByteConverter
             r.AddRange(Meta_WriteProperty(DatagramLength, datagramLength));
             r.AddRange(Meta_WriteProperty(ShaVerified, shaVerify));
             r.AddRange(Meta_WriteProperty(CustomTypeCount, customTypes));
-            r.AddRange(Meta_WriteProperty(LengthReader, LengthSize));
+            r.AddRange(Meta_WriteProperty(LengthReader, LengthType));
             r.AddRange(Meta_WriteProperty(ShaVerificationCode, shaCode));
 
             return r.ToArray();

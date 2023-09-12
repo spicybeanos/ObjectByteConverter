@@ -25,6 +25,8 @@ namespace ByteConverter
         Bool,
         Char,
         DateTime,
+        Vector3,
+        Quaternion,
         String,
         String_UTF8,
         Meta_String,
@@ -42,8 +44,7 @@ namespace ByteConverter
         Strings,
 
         GUID,
-        Vector3,
-        Quaternion,
+
         CustomStructure,
     }
 
