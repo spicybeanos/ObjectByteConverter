@@ -29,6 +29,7 @@ namespace ByteConverter
             string className = ReadUTF8(buff, ref pointer);
             return className;
         }
+        
         /// <summary>
         /// Deserializes the buffer. <br/>
         /// Make sure that pointer is at the start of the packet!<br/>
