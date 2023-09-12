@@ -1,23 +1,51 @@
 <metainf>
+<typedef>
 <data>
 
-in metainf:
+# in metainf:
 
-the Encoding will be utf8 for strings and end marked by '\0'
+    the Encoding will be utf8 for strings
+    any array has max length of 256
 
 ClassName:
- "$CN" + (str)className
+    "$C" + (str)className
 
 DatagramLength:
- "$DL" + (int)length
+    "$L" + (int)length
 
 ShaVerified :
- "$SV" + (bool)verified
+    "$V" + (bool)verified
 
 ShaVerificationCode:
- "$VC" + (byte[])sha1
+    "$VC" + (byte[])sha1
 
 Length Reader :
- "$LR" + (ByteToken)reader
+    "$LR" + (ByteToken)reader
 
-EndOfMeta = "&0"
+EndOfMeta:
+    "&0m" + 0
+Custom Type Count :
+    "$CT" + (ushort)count
+
+# in structure formating <typedef>:
+
+    search for all public properties or fields (based on what the 
+    user chooses).
+
+    get the data types of the properties (only primitives allowed!)
+
+    struct name:
+    "%SN" + (str)structName
+    
+    variable count:
+    "%VC" + (len)number of variables
+
+Encoding data :
+    (ByteToken)identifier + (str)varName + (ByteToken)type + data
+
+    for primitive types:
+        <get bytes>
+    for array types:
+        (len)length + [n]<get bytes>
+    for custom:
+        (utf8str)typename + (utf8)var name + (type)<encode>
