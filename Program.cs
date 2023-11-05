@@ -9,29 +9,19 @@ class Program
 {
     static void Main(string[] args)
     {
-        
+        StandardEncoder encoder = new(DataTypeIDs.UInt16,StringEncodingMode.UTF8);
+        var bts = encoder.EncodeArray(new string[]{"Hello ","world"},DataTypeIDs.String_array);
+        Console.WriteLine(ByteArrayToString(bts));
     }
-    public static string ByteArrayToString(byte[] arrInput)
+    private static string ByteArrayToString(byte[] arrInput)
     {
         int i;
         StringBuilder sOutput = new StringBuilder(arrInput.Length);
         for (i = 0; i < arrInput.Length; i++)
         {
-            sOutput.Append(arrInput[i].ToString("x2") + " ");
+            sOutput.Append(arrInput[i].ToString("x2"));
+            sOutput.Append(" ");
         }
         return sOutput.ToString();
     }
-}
-
-public class V : C
-{
-    public string str { get; set; }
-    public int[] ints { get; set; }
-}
-
-public class C
-{
-    public int x { get; set; }
-    public int y { get; set; }
-    public int z { get; set; }
 }

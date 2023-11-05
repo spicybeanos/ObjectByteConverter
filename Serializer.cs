@@ -10,6 +10,10 @@ namespace ByteConverter
 {
     public class Serializer
     {
-        
+        public byte[] Serialize(object obj, Type type)
+        {
+            FieldInfo[] fields = type.GetFields();
+            return null;
+        }
     }
 }
