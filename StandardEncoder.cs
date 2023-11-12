@@ -18,13 +18,26 @@ namespace ByteConverter
             SizeT = size_t;
             stringEncoding = mode;
         }
+
+        public byte[] EncodePrimitive(object value, DataTypeIDs type)
+        {
+            if (DataTypes.IsFixed(type))
+                return EncodeFixed(value, type);
+            else if (DataTypes.IsArray(type))
+                return EncodeArray(value, type);
+            else
+                throw new Exception($"{type} is not a primitive type! Cannot use {nameof(EncodePrimitive)} to encode user defined types");
+        }
+        public byte[] EncodePrimitive<T>(T value){
+            return EncodePrimitive(value,DataTypes.GetDataTypeIDFromType(typeof(T)));
+        }
         /// <summary>
         /// Encodes length according to the size in SizeT
         /// to bytes
         /// </summary>
         /// <param name="length"></param>
         /// <returns></returns>
-        public byte[] EncodeLength(int length)
+        private byte[] EncodeLength(long length)
         {
             switch (SizeT)
             {
@@ -37,7 +50,7 @@ namespace ByteConverter
                 case DataTypeIDs.UInt16:
                     return BitConverter.GetBytes((ushort)length);
                 case DataTypeIDs.Int32:
-                    return BitConverter.GetBytes(length);
+                    return BitConverter.GetBytes((int)length);
                 case DataTypeIDs.UInt32:
                     return BitConverter.GetBytes((uint)length);
                 case DataTypeIDs.Int64:
@@ -47,6 +60,9 @@ namespace ByteConverter
                 default:
                     throw new Exception($"Invalid length encoder type : {SizeT}");
             }
+        }
+        public byte[] EncodeSizeT(int value){
+            return EncodeLength(value);
         }
         public byte[] EncodeFixed(object value, DataTypeIDs dataType)
         {
@@ -202,12 +218,20 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.String:
+                case DataTypeIDs.String_std:
                     {
                         var arr = (string)value;
-                        int len = arr.Length;
-                        ret.AddRange(EncodeLength(len));
-                        ret.AddRange(EncodeString(arr));
+                        byte[] k = EncodeString(arr);
+                        ret.AddRange(EncodeLength(k.LongLength));
+                        ret.AddRange(k);
+                    }
+                    break;
+                case DataTypeIDs.String_ascii:
+                    {
+                        var arr = (string)value;
+                        byte[] k = EncodeStringASCII(arr);
+                        ret.AddRange(EncodeLength(k.LongLength));
+                        ret.AddRange(k);
                     }
                     break;
                 case DataTypeIDs.String_array:
@@ -228,7 +252,7 @@ namespace ByteConverter
             foreach (var item in array)
             {
                 ret.AddRange(EncodeFixed(item,
-                DataTypes.TypeToDataTypeID(typeof(T))));
+                DataTypes.GetDataTypeIDFromType(typeof(T))));
             }
             return ret.ToArray();
         }
@@ -237,8 +261,9 @@ namespace ByteConverter
             List<byte> ret = new();
             for (int i = 0; i < array.Length; i++)
             {
-                ret.AddRange(EncodeLength(array[i].Length));
-                ret.AddRange(EncodeString(array[i]));
+                byte[] k = EncodeString(array[i]);
+                ret.AddRange(EncodeLength(k.LongLength));
+                ret.AddRange(k);
             }
             return ret.ToArray();
         }
@@ -255,6 +280,10 @@ namespace ByteConverter
                 default:
                     throw new Exception($"Invalid string encoding {stringEncoding}!");
             }
+        }
+        private byte[] EncodeStringASCII(string str)
+        {
+            return Encoding.ASCII.GetBytes(str);
         }
     }
 }

@@ -32,19 +32,21 @@ namespace ByteConverter
         Float32_array,
         Float64_array,
         //utf-8 and length of size_t
-        String,
+        String_std,
+        String_ascii,
         String_array,
         //unicode string
 
         UserDefined,
-        
+        DynamicArray
+
     }
     public class DataTypes
     {
         private static readonly Dictionary<Type, DataTypeIDs>
         _type_dataTypeID = new Dictionary<Type, DataTypeIDs>()
         {
-            
+
             {typeof(byte),DataTypeIDs.Int8},
             {typeof(short),DataTypeIDs.Int16},
             {typeof(int),DataTypeIDs.Int32},
@@ -58,7 +60,7 @@ namespace ByteConverter
             {typeof(double),DataTypeIDs.Float64},
             {typeof(char),DataTypeIDs.Char},
             {typeof(bool),DataTypeIDs.Boolean},
-            {typeof(string),DataTypeIDs.String},
+            {typeof(string),DataTypeIDs.String_std},
 
             {typeof(byte[]),DataTypeIDs.Int8_array},
             {typeof(short[]),DataTypeIDs.Int16_array},
@@ -71,14 +73,22 @@ namespace ByteConverter
             {typeof(Half[]),DataTypeIDs.Float16_array},
             {typeof(float[]),DataTypeIDs.Float32_array},
             {typeof(double[]),DataTypeIDs.Float64_array},
-            {typeof(char[]),DataTypeIDs.String},
+            {typeof(char[]),DataTypeIDs.String_std},
             {typeof(string[]),DataTypeIDs.String_array}
         };
-        public static DataTypeIDs TypeToDataTypeID(Type type)
+        public static DataTypeIDs GetDataTypeIDFromType(Type type)
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
             return DataTypeIDs.UserDefined;
+        }
+        public static bool IsFixed(DataTypeIDs type)
+        {
+            return (int)type >= (int)DataTypeIDs.Char && (int)type <= (int)DataTypeIDs.Float64;
+        }
+        public static bool IsArray(DataTypeIDs type)
+        {
+            return (int)type >= (int)DataTypeIDs.Int8_array && (int) type <= (int)DataTypeIDs.String_array;
         }
     }
 }
