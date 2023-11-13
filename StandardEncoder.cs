@@ -13,6 +13,17 @@ namespace ByteConverter
     {
         public DataTypeIDs SizeT { get; private set; }
         public StringEncodingMode stringEncoding { get; private set; }
+        public MetaInf EncoderMetaInf
+        {
+            get
+            {
+                return new()
+                {
+                    SizeTReader = SizeT,
+                    stringEncodingMode = stringEncoding
+                };
+            }
+        }
         public StandardEncoder(DataTypeIDs size_t, StringEncodingMode mode)
         {
             SizeT = size_t;
@@ -28,8 +39,9 @@ namespace ByteConverter
             else
                 throw new Exception($"{type} is not a primitive type! Cannot use {nameof(EncodePrimitive)} to encode user defined types");
         }
-        public byte[] EncodePrimitive<T>(T value){
-            return EncodePrimitive(value,DataTypes.GetDataTypeIDFromType(typeof(T)));
+        public byte[] EncodePrimitive<T>(T value)
+        {
+            return EncodePrimitive(value, DataTypes.GetDataTypeIDFromType(typeof(T)));
         }
         /// <summary>
         /// Encodes length according to the size in SizeT
@@ -61,10 +73,11 @@ namespace ByteConverter
                     throw new Exception($"Invalid length encoder type : {SizeT}");
             }
         }
-        public byte[] EncodeSizeT(int value){
+        public byte[] EncodeSizeT(int value)
+        {
             return EncodeLength(value);
         }
-        public byte[] EncodeFixed(object value, DataTypeIDs dataType)
+        private byte[] EncodeFixed(object value, DataTypeIDs dataType)
         {
             if ((int)dataType < (int)DataTypeIDs.Char ||
             (int)dataType > (int)DataTypeIDs.Float64)
@@ -120,7 +133,7 @@ namespace ByteConverter
             }
             return ret.ToArray();
         }
-        public byte[] EncodeArray(object value, DataTypeIDs dataType)
+        private byte[] EncodeArray(object value, DataTypeIDs dataType)
         {
             if ((int)dataType < (int)DataTypeIDs.Int8_array ||
             (int)dataType > (int)DataTypeIDs.String_array)

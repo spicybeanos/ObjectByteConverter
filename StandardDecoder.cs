@@ -6,6 +6,17 @@ namespace ByteConverter
     {
         public StringEncodingMode stringEncoding { get; private set; }
         public DataTypeIDs sizeT { get; private set; }
+        public MetaInf DecoderMetaInf
+        {
+            get
+            {
+                return new()
+                {
+                    SizeTReader = sizeT,
+                    stringEncodingMode = stringEncoding
+                };
+            }
+        }
         public StandardDecoder(DataTypeIDs size_t, StringEncodingMode stringEncodingMode)
         {
             stringEncoding = stringEncodingMode;
@@ -27,9 +38,9 @@ namespace ByteConverter
         }
         public T DecodePrimitive<T>(byte[] data, ref int pointer)
         {
-            return (T)DecodePrimitive(data,ref pointer,DataTypes.GetDataTypeIDFromType(typeof(T)));
+            return (T)DecodePrimitive(data, ref pointer, DataTypes.GetDataTypeIDFromType(typeof(T)));
         }
-        public int ReadLength(byte[] data, ref int pointer)
+        private int ReadLength(byte[] data, ref int pointer)
         {
             long val_ = 0;
             switch (sizeT)
@@ -182,7 +193,7 @@ namespace ByteConverter
                     throw new Exception($"Datatype {dtype} is not a array type!");
             }
         }
-        internal T[] m_ReadFixedArray<T>(byte[] data, ref int pointer)
+        private T[] m_ReadFixedArray<T>(byte[] data, ref int pointer)
         {
             int length = ReadLength(data, ref pointer);
             T[] ret = new T[length];
@@ -193,7 +204,7 @@ namespace ByteConverter
             }
             return ret;
         }
-        internal string m_ReadString_std(byte[] data, ref int pointer)
+        private string m_ReadString_std(byte[] data, ref int pointer)
         {
             int length = ReadLength(data, ref pointer);
             string s = "";
@@ -216,7 +227,7 @@ namespace ByteConverter
             }
             return s;
         }
-        internal string[] m_ReadStringArray(byte[] data, ref int pointer)
+        private string[] m_ReadStringArray(byte[] data, ref int pointer)
         {
             int length = ReadLength(data, ref pointer);
             string[] str = new string[length];

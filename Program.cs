@@ -10,9 +10,10 @@ class Program
     static void Main(string[] args)
     {
         StandardEncoder encoder = new(DataTypeIDs.UInt16,StringEncodingMode.UTF8);
-        var bts = encoder.EncodePrimitive("Hello world",DataTypeIDs.String_std);
-        
-        Console.WriteLine(ByteArrayToString(bts));
+        var bts = encoder.EncodePrimitive(null,DataTypeIDs.String_std);
+        StandardDecoder decoder = new(encoder.EncoderMetaInf);
+        int ptr = 0;
+        Console.WriteLine(decoder.DecodePrimitive<string>(bts,ref ptr));
     }
     private static string ByteArrayToString(byte[] arrInput)
     {
