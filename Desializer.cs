@@ -11,7 +11,10 @@ namespace ByteConverter
 {
     public class Desializer
     {
-        
+        public static void Desialize<T>()
+        {
+            Activator.CreateInstance<T>();
+        }
     }
 }
 

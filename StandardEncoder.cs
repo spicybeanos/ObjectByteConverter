@@ -29,6 +29,11 @@ namespace ByteConverter
             SizeT = size_t;
             stringEncoding = mode;
         }
+        public StandardEncoder(MetaInf inf)
+        {
+            SizeT = inf.SizeTReader;
+            stringEncoding = inf.stringEncodingMode;
+        }
 
         public byte[] EncodePrimitive(object value, DataTypeIDs type)
         {
@@ -83,10 +88,7 @@ namespace ByteConverter
             (int)dataType > (int)DataTypeIDs.Float64)
                 throw new Exception($"Data type {dataType} is not a fixed length data type!");
 
-            List<byte> ret = new()
-            {
-                (byte)dataType
-            };
+            List<byte> ret = new();
             switch (dataType)
             {
                 case DataTypeIDs.Char:

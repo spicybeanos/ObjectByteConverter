@@ -40,6 +40,9 @@ namespace ByteConverter
         {
             return (T)DecodePrimitive(data, ref pointer, DataTypes.GetDataTypeIDFromType(typeof(T)));
         }
+        public int ReadSizeT(byte[] data, ref int pointer){
+            return ReadLength(data,ref pointer);
+        }
         private int ReadLength(byte[] data, ref int pointer)
         {
             long val_ = 0;
@@ -88,8 +91,7 @@ namespace ByteConverter
         }
         public object ReadFixed(byte[] data, ref int pointer, DataTypeIDs type)
         {
-            if ((int)type < (int)DataTypeIDs.Char ||
-            (int)type > (int)DataTypeIDs.Float64)
+            if (!DataTypes.IsFixed(type))
                 throw new Exception($"Datatype {type} is not a fixed type!");
             object val_;
             switch (type)

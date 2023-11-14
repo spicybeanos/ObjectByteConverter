@@ -3,6 +3,7 @@ namespace ByteConverter
     public enum DataTypeIDs
     {
         //put any fixed type between char and float64
+        Null,
         Char,
         Boolean,
         Int8,
