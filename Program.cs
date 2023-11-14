@@ -22,6 +22,7 @@ class Program
         UserDefinitions ud = new UserDefinitions();
         var suc = ud.AddClass(typeof(Test1));
         var suc2 = ud.AddClass(typeof(Test2));
+        
         var bts = ud.GenerateTypesDictionaryByte(encoder);
         Console.WriteLine(ByteArrayToString(bts));
         var res = UserDefinitions.FromBytes(bts, ref ptr, decoder);
