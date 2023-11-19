@@ -1,6 +1,6 @@
 namespace ByteConverter
 {
-    public enum DataTypeIDs
+    public enum DataTypeID
     {
         //put any fixed type between char and float64
         Null,
@@ -33,7 +33,7 @@ namespace ByteConverter
         Float32_array,
         Float64_array,
         //utf-8 and length of size_t
-        String_std,
+        StdString,
         String_ascii,
         String_array,
         //unicode string
@@ -44,52 +44,52 @@ namespace ByteConverter
     }
     public class DataTypes
     {
-        private static readonly Dictionary<Type, DataTypeIDs>
-        _type_dataTypeID = new Dictionary<Type, DataTypeIDs>()
+        private static readonly Dictionary<Type, DataTypeID>
+        _type_dataTypeID = new Dictionary<Type, DataTypeID>()
         {
 
-            {typeof(byte),DataTypeIDs.Int8},
-            {typeof(short),DataTypeIDs.Int16},
-            {typeof(int),DataTypeIDs.Int32},
-            {typeof(long),DataTypeIDs.Int64},
-            {typeof(sbyte),DataTypeIDs.SInt8},
-            {typeof(ushort),DataTypeIDs.UInt16},
-            {typeof(uint),DataTypeIDs.UInt32},
-            {typeof(ulong),DataTypeIDs.UInt64},
-            {typeof(float),DataTypeIDs.Float32},
-            {typeof(Half),DataTypeIDs.Float16},
-            {typeof(double),DataTypeIDs.Float64},
-            {typeof(char),DataTypeIDs.Char},
-            {typeof(bool),DataTypeIDs.Boolean},
-            {typeof(string),DataTypeIDs.String_std},
+            {typeof(byte),DataTypeID.Int8},
+            {typeof(short),DataTypeID.Int16},
+            {typeof(int),DataTypeID.Int32},
+            {typeof(long),DataTypeID.Int64},
+            {typeof(sbyte),DataTypeID.SInt8},
+            {typeof(ushort),DataTypeID.UInt16},
+            {typeof(uint),DataTypeID.UInt32},
+            {typeof(ulong),DataTypeID.UInt64},
+            {typeof(float),DataTypeID.Float32},
+            {typeof(Half),DataTypeID.Float16},
+            {typeof(double),DataTypeID.Float64},
+            {typeof(char),DataTypeID.Char},
+            {typeof(bool),DataTypeID.Boolean},
+            {typeof(string),DataTypeID.StdString},
 
-            {typeof(byte[]),DataTypeIDs.Int8_array},
-            {typeof(short[]),DataTypeIDs.Int16_array},
-            {typeof(int[]),DataTypeIDs.Int32_array},
-            {typeof(long[]),DataTypeIDs.Int64_array},
-            {typeof(sbyte[]),DataTypeIDs.SInt8_array},
-            {typeof(ushort[]),DataTypeIDs.UInt16_array},
-            {typeof(uint[]),DataTypeIDs.UInt32_array},
-            {typeof(ulong[]),DataTypeIDs.UInt64_array},
-            {typeof(Half[]),DataTypeIDs.Float16_array},
-            {typeof(float[]),DataTypeIDs.Float32_array},
-            {typeof(double[]),DataTypeIDs.Float64_array},
-            {typeof(char[]),DataTypeIDs.String_std},
-            {typeof(string[]),DataTypeIDs.String_array}
+            {typeof(byte[]),DataTypeID.Int8_array},
+            {typeof(short[]),DataTypeID.Int16_array},
+            {typeof(int[]),DataTypeID.Int32_array},
+            {typeof(long[]),DataTypeID.Int64_array},
+            {typeof(sbyte[]),DataTypeID.SInt8_array},
+            {typeof(ushort[]),DataTypeID.UInt16_array},
+            {typeof(uint[]),DataTypeID.UInt32_array},
+            {typeof(ulong[]),DataTypeID.UInt64_array},
+            {typeof(Half[]),DataTypeID.Float16_array},
+            {typeof(float[]),DataTypeID.Float32_array},
+            {typeof(double[]),DataTypeID.Float64_array},
+            {typeof(char[]),DataTypeID.StdString},
+            {typeof(string[]),DataTypeID.String_array}
         };
-        public static DataTypeIDs GetDataTypeIDFromType(Type type)
+        public static DataTypeID GetDataTypeIDFromType(Type type)
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
-            return DataTypeIDs.UserDefined;
+            return DataTypeID.UserDefined;
         }
-        public static bool IsFixed(DataTypeIDs type)
+        public static bool IsFixed(DataTypeID type)
         {
-            return (int)type >= (int)DataTypeIDs.Char && (int)type <= (int)DataTypeIDs.Float64;
+            return (int)type >= (int)DataTypeID.Char && (int)type <= (int)DataTypeID.Float64;
         }
-        public static bool IsArray(DataTypeIDs type)
+        public static bool IsArray(DataTypeID type)
         {
-            return (int)type >= (int)DataTypeIDs.Int8_array && (int) type <= (int)DataTypeIDs.String_array;
+            return (int)type >= (int)DataTypeID.Int8_array && (int) type <= (int)DataTypeID.String_array;
         }
     }
 }

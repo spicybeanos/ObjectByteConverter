@@ -11,7 +11,7 @@ namespace ByteConverter
     }
     public class StandardEncoder
     {
-        public DataTypeIDs SizeT { get; private set; }
+        public DataTypeID SizeT { get; private set; }
         public StringEncodingMode stringEncoding { get; private set; }
         public MetaInf EncoderMetaInf
         {
@@ -24,7 +24,7 @@ namespace ByteConverter
                 };
             }
         }
-        public StandardEncoder(DataTypeIDs size_t, StringEncodingMode mode)
+        public StandardEncoder(DataTypeID size_t, StringEncodingMode mode)
         {
             SizeT = size_t;
             stringEncoding = mode;
@@ -35,7 +35,7 @@ namespace ByteConverter
             stringEncoding = inf.stringEncodingMode;
         }
 
-        public byte[] EncodePrimitive(object value, DataTypeIDs type)
+        public byte[] EncodePrimitive(object value, DataTypeID type)
         {
             if (DataTypes.IsFixed(type))
                 return EncodeFixed(value, type);
@@ -58,21 +58,21 @@ namespace ByteConverter
         {
             switch (SizeT)
             {
-                case DataTypeIDs.Int8:
+                case DataTypeID.Int8:
                     return new byte[] { (byte)length };
-                case DataTypeIDs.SInt8:
+                case DataTypeID.SInt8:
                     return new byte[] { (byte)length };
-                case DataTypeIDs.Int16:
+                case DataTypeID.Int16:
                     return BitConverter.GetBytes((short)length);
-                case DataTypeIDs.UInt16:
+                case DataTypeID.UInt16:
                     return BitConverter.GetBytes((ushort)length);
-                case DataTypeIDs.Int32:
+                case DataTypeID.Int32:
                     return BitConverter.GetBytes((int)length);
-                case DataTypeIDs.UInt32:
+                case DataTypeID.UInt32:
                     return BitConverter.GetBytes((uint)length);
-                case DataTypeIDs.Int64:
+                case DataTypeID.Int64:
                     return BitConverter.GetBytes((long)length);
-                case DataTypeIDs.UInt64:
+                case DataTypeID.UInt64:
                     return BitConverter.GetBytes((ulong)length);
                 default:
                     throw new Exception($"Invalid length encoder type : {SizeT}");
@@ -82,52 +82,52 @@ namespace ByteConverter
         {
             return EncodeLength(value);
         }
-        private byte[] EncodeFixed(object value, DataTypeIDs dataType)
+        private byte[] EncodeFixed(object value, DataTypeID dataType)
         {
-            if ((int)dataType < (int)DataTypeIDs.Char ||
-            (int)dataType > (int)DataTypeIDs.Float64)
+            if ((int)dataType < (int)DataTypeID.Char ||
+            (int)dataType > (int)DataTypeID.Float64)
                 throw new Exception($"Data type {dataType} is not a fixed length data type!");
 
             List<byte> ret = new();
             switch (dataType)
             {
-                case DataTypeIDs.Char:
+                case DataTypeID.Char:
                     ret.AddRange(BitConverter.GetBytes((char)value));
                     break;
-                case DataTypeIDs.Boolean:
+                case DataTypeID.Boolean:
                     ret.AddRange(BitConverter.GetBytes((bool)value));
                     break;
-                case DataTypeIDs.Int8:
+                case DataTypeID.Int8:
                     ret.AddRange(BitConverter.GetBytes((byte)value));
                     break;
-                case DataTypeIDs.SInt8:
+                case DataTypeID.SInt8:
                     ret.AddRange(BitConverter.GetBytes((sbyte)value));
                     break;
-                case DataTypeIDs.Int16:
+                case DataTypeID.Int16:
                     ret.AddRange(BitConverter.GetBytes((short)value));
                     break;
-                case DataTypeIDs.UInt16:
+                case DataTypeID.UInt16:
                     ret.AddRange(BitConverter.GetBytes((ushort)value));
                     break;
-                case DataTypeIDs.Int32:
+                case DataTypeID.Int32:
                     ret.AddRange(BitConverter.GetBytes((int)value));
                     break;
-                case DataTypeIDs.UInt32:
+                case DataTypeID.UInt32:
                     ret.AddRange(BitConverter.GetBytes((uint)value));
                     break;
-                case DataTypeIDs.Int64:
+                case DataTypeID.Int64:
                     ret.AddRange(BitConverter.GetBytes((long)value));
                     break;
-                case DataTypeIDs.UInt64:
+                case DataTypeID.UInt64:
                     ret.AddRange(BitConverter.GetBytes((ulong)value));
                     break;
-                case DataTypeIDs.Float16:
+                case DataTypeID.Float16:
                     ret.AddRange(BitConverter.GetBytes((Half)value));
                     break;
-                case DataTypeIDs.Float32:
+                case DataTypeID.Float32:
                     ret.AddRange(BitConverter.GetBytes((float)value));
                     break;
-                case DataTypeIDs.Float64:
+                case DataTypeID.Float64:
                     ret.AddRange(BitConverter.GetBytes((double)value));
                     break;
                 default:
@@ -135,17 +135,17 @@ namespace ByteConverter
             }
             return ret.ToArray();
         }
-        private byte[] EncodeArray(object value, DataTypeIDs dataType)
+        private byte[] EncodeArray(object value, DataTypeID dataType)
         {
-            if ((int)dataType < (int)DataTypeIDs.Int8_array ||
-            (int)dataType > (int)DataTypeIDs.String_array)
+            if ((int)dataType < (int)DataTypeID.Int8_array ||
+            (int)dataType > (int)DataTypeID.String_array)
                 throw new Exception($"Data type {dataType} is not a dynamic data type!");
 
             List<byte> ret = new();
 
             switch (dataType)
             {
-                case DataTypeIDs.Int8_array:
+                case DataTypeID.Int8_array:
                     {
                         var arr = (IEnumerable<byte>)value;
                         int len = arr.Count();
@@ -153,7 +153,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.SInt8_array:
+                case DataTypeID.SInt8_array:
                     {
                         var arr = (IEnumerable<sbyte>)value;
                         int len = arr.Count();
@@ -161,7 +161,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Int16_array:
+                case DataTypeID.Int16_array:
                     {
                         var arr = (IEnumerable<short>)value;
                         int len = arr.Count();
@@ -169,7 +169,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.UInt16_array:
+                case DataTypeID.UInt16_array:
                     {
                         var arr = (IEnumerable<ushort>)value;
                         int len = arr.Count();
@@ -177,7 +177,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Int32_array:
+                case DataTypeID.Int32_array:
                     {
                         var arr = (IEnumerable<int>)value;
                         int len = arr.Count();
@@ -185,7 +185,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.UInt32_array:
+                case DataTypeID.UInt32_array:
                     {
                         var arr = (IEnumerable<uint>)value;
                         int len = arr.Count();
@@ -193,7 +193,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Int64_array:
+                case DataTypeID.Int64_array:
                     {
                         var arr = (IEnumerable<long>)value;
                         int len = arr.Count();
@@ -201,7 +201,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.UInt64_array:
+                case DataTypeID.UInt64_array:
                     {
                         var arr = (IEnumerable<ulong>)value;
                         int len = arr.Count();
@@ -209,7 +209,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Float16_array:
+                case DataTypeID.Float16_array:
                     {
                         var arr = (IEnumerable<Half>)value;
                         int len = arr.Count();
@@ -217,7 +217,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Float32_array:
+                case DataTypeID.Float32_array:
                     {
                         var arr = (IEnumerable<float>)value;
                         int len = arr.Count();
@@ -225,7 +225,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.Float64_array:
+                case DataTypeID.Float64_array:
                     {
                         var arr = (IEnumerable<double>)value;
                         int len = arr.Count();
@@ -233,7 +233,7 @@ namespace ByteConverter
                         ret.AddRange(EncodeFixedArray(arr));
                     }
                     break;
-                case DataTypeIDs.String_std:
+                case DataTypeID.StdString:
                     {
                         var arr = (string)value;
                         byte[] k = EncodeString(arr);
@@ -241,7 +241,7 @@ namespace ByteConverter
                         ret.AddRange(k);
                     }
                     break;
-                case DataTypeIDs.String_ascii:
+                case DataTypeID.String_ascii:
                     {
                         var arr = (string)value;
                         byte[] k = EncodeStringASCII(arr);
@@ -249,7 +249,7 @@ namespace ByteConverter
                         ret.AddRange(k);
                     }
                     break;
-                case DataTypeIDs.String_array:
+                case DataTypeID.String_array:
                     {
                         var arr = (string[])value;
                         int len = arr.Length;

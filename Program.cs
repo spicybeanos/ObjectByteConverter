@@ -5,6 +5,7 @@ using System.Text;
 using ByteConverter;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
+using System.Reflection;
 
 class Program
 {
@@ -13,24 +14,61 @@ class Program
         MetaInf metaInf = new()
         {
             stringEncodingMode = StringEncodingMode.UTF8,
-            SizeTReader = DataTypeIDs.UInt16
+            SizeTReader = DataTypeID.UInt16
         };
         StandardEncoder encoder = new(metaInf);
         StandardDecoder decoder = new(metaInf);
-        int ptr = 0; JsonSerializerOptions op = new() { WriteIndented = true };
+        int ptr = 0;
+        JsonSerializerOptions op = new() { WriteIndented = true };
+        ClassDefinitions definitions = new();
 
-        UserDefinitions ud = new UserDefinitions();
-        var suc = ud.AddClass(typeof(Test1));
-        var suc2 = ud.AddClass(typeof(Test2));
+
+
+        var bytes1 = ClassData.GetBytes(
+                    ClassData.FromType(typeof(Transform), definitions),
+                    encoder
+                );
+        var bytes2 = ClassData.GetBytes(
+            ClassData.FromType(typeof(Vector3), definitions), encoder
+        );
+        var bytes3 = ClassData.GetBytes(
+            ClassData.FromType(typeof(Quaternion), definitions), encoder
+        );
+        Console.WriteLine(
+            ByteArrayToString(
+                bytes1
+            )
+            );
+        Console.WriteLine();
+        Console.WriteLine(
+        ByteArrayToString(
+            bytes2
+        )
+        );
+        Console.WriteLine();
+        Console.WriteLine(
+        ByteArrayToString(
+            bytes3
+        )
+        );
+        ClassData classData = ClassData.FromBytes(bytes1, ref ptr, decoder);
+        Console.WriteLine(
+            JsonSerializer.Serialize(classData,op)
+        );
+
+        Console.WriteLine();
+        ptr = 0;
+        classData = ClassData.FromBytes(bytes2, ref ptr, decoder);
+        Console.WriteLine(
+            JsonSerializer.Serialize(classData,op)
+        );
         
-        var bts = ud.GenerateTypesDictionaryByte(encoder);
-        Console.WriteLine(ByteArrayToString(bts));
-        var res = UserDefinitions.FromBytes(bts, ref ptr, decoder);
-
-        Console.WriteLine($"Success : {suc} {suc2}");
-        Console.WriteLine(ByteArrayToString(bts));
-        Console.WriteLine($"dict1 : {PrintDictionary(res.ClassIDDictionary)}");
-        Console.WriteLine($"dict2 : {PrintDictionary(res.GlobalDefinitions)}");
+        Console.WriteLine();
+        ptr = 0;
+        classData = ClassData.FromBytes(bytes3, ref ptr, decoder);
+        Console.WriteLine(
+            JsonSerializer.Serialize(classData,op)
+        );
     }
     private static string ByteArrayToString(byte[] arrInput)
     {
@@ -43,26 +81,24 @@ class Program
         }
         return sOutput.ToString();
     }
-    public static string PrintDictionary<K, V>(Dictionary<K, V> dict)
-    {
-        string res = "[\n";
-        foreach (var k in dict.Keys)
-        {
-            res += $"\t{{{k}:{dict[k]}}},\n";
-        }
-        res += "]";
-        return res;
-    }
 }
 
 
-class Test1
+class Transform
 {
-    public int k = 10,r=3;
-    public string s = "w";
+    public string name = "";
+    public Quaternion rotation = Quaternion.Identity;
+    public Vector3 position = Vector3.zero;
+    public Transform transform;
 }
-
-class Test2
+class Quaternion
 {
-    public int h = 10;
+    public float x = 0, y = 0, z = 0, w = 0;
+    public static Quaternion Identity { get { return new Quaternion() { x = 0, y = 0, z = 0, w = 0 }; } }
+}
+class Vector3
+{
+    public Transform transform;
+    public float x = 0, y = 0, z = 0;
+    public static Vector3 zero { get { return new Vector3() { x = 0, y = 0, z = 0 }; } }
 }

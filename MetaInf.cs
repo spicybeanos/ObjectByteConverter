@@ -14,11 +14,11 @@ namespace ByteConverter
     public class MetaInf
     {
         public string ClassName { get; set; }
-        public DataTypeIDs SizeTReader { get; set; }
+        public DataTypeID SizeTReader { get; set; }
         public StringEncodingMode stringEncodingMode { get; set; }
         public bool IncludeAssemblyQualifiedName { get; set; } = false;
         public int Length { get; set; }
-        public MetaInf(string className, DataTypeIDs sizeTReader,
+        public MetaInf(string className, DataTypeID sizeTReader,
          int length, StringEncodingMode stringEncoding)
         {
             ClassName = className;
@@ -37,7 +37,7 @@ namespace ByteConverter
         }
         public static byte[] GenerateMetaInfBytes
         (string className,
-        DataTypeIDs sizeTReader, int Length,
+        DataTypeID sizeTReader, int Length,
         StringEncodingMode stringEncodingMode, bool includeAssemblyQualifiedName)
         {
             List<byte> ret = new()
@@ -92,7 +92,7 @@ namespace ByteConverter
                 {
                     case MetaInfTokens.Size_TReader:
                         {
-                            DataTypeIDs sizeT = (DataTypeIDs)buffer.Dequeue();
+                            DataTypeID sizeT = (DataTypeID)buffer.Dequeue();
                             inf.SizeTReader = sizeT;
                         }
                         break;
