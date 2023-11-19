@@ -4,7 +4,7 @@ namespace ByteConverter
     public enum DefToken
     {
         //size_t
-        NumberOfClassesInDictionary = 1,
+        DictClassCount = 1,
         //size t >> FieldData.GetBytes() n times
         ClassFeilds,
         //std string

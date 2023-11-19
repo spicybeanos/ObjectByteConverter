@@ -22,53 +22,12 @@ class Program
         JsonSerializerOptions op = new() { WriteIndented = true };
         ClassDefinitions definitions = new();
 
-
-
-        var bytes1 = ClassData.GetBytes(
-                    ClassData.FromType(typeof(Transform), definitions),
-                    encoder
-                );
-        var bytes2 = ClassData.GetBytes(
-            ClassData.FromType(typeof(Vector3), definitions), encoder
-        );
-        var bytes3 = ClassData.GetBytes(
-            ClassData.FromType(typeof(Quaternion), definitions), encoder
-        );
-        Console.WriteLine(
-            ByteArrayToString(
-                bytes1
-            )
-            );
-        Console.WriteLine();
-        Console.WriteLine(
-        ByteArrayToString(
-            bytes2
-        )
-        );
-        Console.WriteLine();
-        Console.WriteLine(
-        ByteArrayToString(
-            bytes3
-        )
-        );
-        ClassData classData = ClassData.FromBytes(bytes1, ref ptr, decoder);
-        Console.WriteLine(
-            JsonSerializer.Serialize(classData,op)
-        );
-
-        Console.WriteLine();
-        ptr = 0;
-        classData = ClassData.FromBytes(bytes2, ref ptr, decoder);
-        Console.WriteLine(
-            JsonSerializer.Serialize(classData,op)
-        );
-        
-        Console.WriteLine();
-        ptr = 0;
-        classData = ClassData.FromBytes(bytes3, ref ptr, decoder);
-        Console.WriteLine(
-            JsonSerializer.Serialize(classData,op)
-        );
+        definitions.TryAddClass(typeof(Transform));
+        Console.WriteLine(definitions.DEBUG());
+        var bts = ClassDefinitions.GetBytes(definitions,encoder);
+        Console.WriteLine(ByteArrayToString(bts));
+        var classDef = ClassDefinitions.FromBytes(bts,ref ptr,decoder);
+        Console.WriteLine(classDef.DEBUG());
     }
     private static string ByteArrayToString(byte[] arrInput)
     {
@@ -89,7 +48,7 @@ class Transform
     public string name = "";
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
-    public Transform transform;
+    public Transform transform = null;
 }
 class Quaternion
 {
@@ -98,7 +57,7 @@ class Quaternion
 }
 class Vector3
 {
-    public Transform transform;
+    public Transform transform = null;
     public float x = 0, y = 0, z = 0;
     public static Vector3 zero { get { return new Vector3() { x = 0, y = 0, z = 0 }; } }
 }
