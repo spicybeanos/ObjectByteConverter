@@ -19,7 +19,7 @@ namespace ByteConverter
                 FieldClassID = classDefinitions.GetClassID(info.FieldType)
             };
         }
-        public static byte[] GetBytes(FieldData fieldData, StandardEncoder encoder)
+        public static byte[] GetBytes(FieldData fieldData, PrimitiveEncoder encoder)
         {
             List<byte> ret = new()
             {
@@ -37,7 +37,7 @@ namespace ByteConverter
             byte[] bytes = ret.ToArray();
             return bytes;
         }
-        public static FieldData FromBytes(byte[] data, ref int pointer, StandardDecoder decoder)
+        public static FieldData FromBytes(byte[] data, ref int pointer, PrimitiveDecoder decoder)
         {
             FieldData fieldData = new();
             DefToken tok;

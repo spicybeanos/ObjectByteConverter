@@ -2,7 +2,7 @@ using System.Text;
 
 namespace ByteConverter
 {
-    public class StandardDecoder
+    public class PrimitiveDecoder
     {
         public StringEncodingMode stringEncoding { get; private set; }
         public DataTypeID sizeT { get; private set; }
@@ -17,12 +17,12 @@ namespace ByteConverter
                 };
             }
         }
-        public StandardDecoder(DataTypeID size_t, StringEncodingMode stringEncodingMode)
+        public PrimitiveDecoder(DataTypeID size_t, StringEncodingMode stringEncodingMode)
         {
             stringEncoding = stringEncodingMode;
             sizeT = size_t;
         }
-        public StandardDecoder(MetaInf inf)
+        public PrimitiveDecoder(MetaInf inf)
         {
             sizeT = inf.SizeTReader;
             stringEncoding = inf.stringEncodingMode;

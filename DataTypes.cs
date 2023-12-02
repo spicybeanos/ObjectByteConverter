@@ -20,7 +20,7 @@ namespace ByteConverter
 
         Size_T,
 
-        //dynamic starts from int8_array and ends at 
+        //dynamic starts from int8_array and ends at String_array
         Int8_array,
         SInt8_array,
         Int16_array,
@@ -32,15 +32,12 @@ namespace ByteConverter
         Float16_array,
         Float32_array,
         Float64_array,
-        //utf-8 and length of size_t
         StdString,
         String_ascii,
         String_array,
         //unicode string
 
-        UserDefined,
-        DynamicArray
-
+        UserDefined
     }
     public class DataTypes
     {
@@ -77,6 +74,35 @@ namespace ByteConverter
             {typeof(char[]),DataTypeID.StdString},
             {typeof(string[]),DataTypeID.String_array}
         };
+
+        /// <summary>
+        /// Gets the size of the data type of fixed length.
+        /// Null has a size of 0.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
+        public static int SizeOf(DataTypeID type)
+        {
+            return type switch
+            {
+                DataTypeID.Null => 0,
+                DataTypeID.Char => sizeof(char),
+                DataTypeID.Boolean => sizeof(bool),
+                DataTypeID.Int8 => sizeof(byte),
+                DataTypeID.SInt8 => sizeof(sbyte),
+                DataTypeID.Int16 => sizeof(short),
+                DataTypeID.UInt16 => sizeof(ushort),
+                DataTypeID.Int32 => sizeof(int),
+                DataTypeID.UInt32 => sizeof (uint),
+                DataTypeID.Int64 => sizeof(long),
+                DataTypeID.UInt64 => sizeof(ulong),
+                DataTypeID.Float16 => sizeof(short),
+                DataTypeID.Float32 => sizeof(float),
+                DataTypeID.Float64 => sizeof(double),
+                _ => throw new NotSupportedException($"type {type} does not have a fixed size!")
+            };
+        }
         public static DataTypeID GetDataTypeIDFromType(Type type)
         {
             if (_type_dataTypeID.ContainsKey(type))
@@ -90,6 +116,10 @@ namespace ByteConverter
         public static bool IsArray(DataTypeID type)
         {
             return (int)type >= (int)DataTypeID.Int8_array && (int) type <= (int)DataTypeID.String_array;
+        }
+        public static bool IsPrimitive(DataTypeID type)
+        {
+            return (int)type >= (int)DataTypeID.Null && (int)type <= (int)DataTypeID.String_array;
         }
     }
 }

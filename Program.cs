@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text;
 using ByteConverter;
@@ -16,18 +15,26 @@ class Program
             stringEncodingMode = StringEncodingMode.UTF8,
             SizeTReader = DataTypeID.UInt16
         };
-        StandardEncoder encoder = new(metaInf);
-        StandardDecoder decoder = new(metaInf);
-        int ptr = 0;
+        PrimitiveEncoder encoder = new(metaInf);
+        PrimitiveDecoder decoder = new(metaInf);
+        //int ptr = 0;
         JsonSerializerOptions op = new() { WriteIndented = true };
+        op.IncludeFields = true;
         ClassDefinitions definitions = new();
 
-        definitions.TryAddClass(typeof(Transform));
-        Console.WriteLine(definitions.DEBUG());
-        var bts = ClassDefinitions.GetBytes(definitions,encoder);
+        Transform transform = new(){
+            name = "amogus"
+        };
+
+
+
+        Serializer serializer = new(metaInf);
+        var bts = serializer.Serialize(transform);
+        var json = JsonSerializer.Serialize(transform,op);
+        Console.WriteLine($"bytes Length : {bts.Length}");
+        Console.WriteLine($"json Length : {json.Length}");
         Console.WriteLine(ByteArrayToString(bts));
-        var classDef = ClassDefinitions.FromBytes(bts,ref ptr,decoder);
-        Console.WriteLine(classDef.DEBUG());
+        Console.WriteLine(json);
     }
     private static string ByteArrayToString(byte[] arrInput)
     {
@@ -48,7 +55,6 @@ class Transform
     public string name = "";
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
-    public Transform transform = null;
 }
 class Quaternion
 {
@@ -57,7 +63,10 @@ class Quaternion
 }
 class Vector3
 {
-    public Transform transform = null;
     public float x = 0, y = 0, z = 0;
+    public static Vector3 zero { get { return new Vector3() { x = 0, y = 0, z = 0 }; } }
+}
+class Vector3Int{
+    public int x = 0, y = 0, z = 0;
     public static Vector3 zero { get { return new Vector3() { x = 0, y = 0, z = 0 }; } }
 }

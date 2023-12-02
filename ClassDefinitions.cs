@@ -7,7 +7,8 @@ namespace ByteConverter
     public class ClassDefinitions
     {
         public const int PRIMITIVE_TYPE_CLASS_ID = -1;
-        private int ClassCounter = 0;
+        public const int NULL_VALUE_CLASS_ID = 0;
+        private int ClassCounter { get; set; } = NULL_VALUE_CLASS_ID + 1;
 
         // class name to class id
         private Dictionary<Type, int> ClassIDDictionary
@@ -21,6 +22,7 @@ namespace ByteConverter
         {
             ClassIDDictionary = new Dictionary<Type, int>();
             GlobalDefinitions = new Dictionary<int, ClassData>();
+            ClassCounter  = NULL_VALUE_CLASS_ID + 1;
         }
 
         /*
@@ -32,17 +34,17 @@ namespace ByteConverter
             string s = nameof(ClassIDDictionary) + ":[\n";
             foreach (var type in ClassIDDictionary.Keys)
             {
-                s += $"\t{{{type.FullName}:{ClassIDDictionary[type]}}},\n";
+                s += $"\t{{name={type.FullName}:clsID={ClassIDDictionary[type]}}},\n";
             }
             s+="]\n" + nameof(GlobalDefinitions) + ":[\n";
             foreach (var clsID in GlobalDefinitions.Keys)
             {
-                s += $"\t{{{clsID}:{GlobalDefinitions[clsID].fields.Length}}},\n";
+                s += $"\t{{clsID={clsID}:fields={GlobalDefinitions[clsID].fields.Length}}},\n";
             }
             s+="]\n";
             return s;
         }
-        public static byte[] GetBytes(ClassDefinitions definitions, StandardEncoder encoder)
+        public static byte[] GetBytes(ClassDefinitions definitions, PrimitiveEncoder encoder)
         {
             List<byte> ret = new()
             {
@@ -56,7 +58,7 @@ namespace ByteConverter
             ret.Add((byte)DefToken.DictionaryEnd);
             return ret.ToArray();
         }
-        public static ClassDefinitions FromBytes(byte[] data, ref int pointer, StandardDecoder decoder)
+        public static ClassDefinitions FromBytes(byte[] data, ref int pointer, PrimitiveDecoder decoder)
         {
             DefToken tok;
             ClassDefinitions definitions = new();
@@ -88,6 +90,13 @@ namespace ByteConverter
             if (!TryAddClass(type))
                 return PRIMITIVE_TYPE_CLASS_ID;
             return ClassIDDictionary[type];
+        }
+        public ClassData GetClassData(int classID)
+        {
+            if (GlobalDefinitions.ContainsKey(classID))
+                return GlobalDefinitions[classID];
+            else
+                throw new Exception($"A class defination for class id {classID.ToString("x2")} does not exist!");
         }
         public bool TryAddClass(Type type)
         {

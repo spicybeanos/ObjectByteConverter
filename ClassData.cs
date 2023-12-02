@@ -10,7 +10,7 @@ namespace ByteConverter
         public int ClassID { get; set; }
         public FieldData[] fields { get; set; }
 
-        public static byte[] GetBytes(ClassData classData, StandardEncoder encoder)
+        public static byte[] GetBytes(ClassData classData, PrimitiveEncoder encoder)
         {
             List<byte> ret = new(){
                 (byte)DefToken.ClassID
@@ -27,7 +27,7 @@ namespace ByteConverter
             ret.Add((byte)DefToken.ClassDataEnd);
             return ret.ToArray();
         }
-        public static ClassData FromBytes(byte[] data, ref int pointer, StandardDecoder decoder)
+        public static ClassData FromBytes(byte[] data, ref int pointer, PrimitiveDecoder decoder)
         {
             ClassData classData = new();
             DefToken token;
@@ -65,7 +65,10 @@ namespace ByteConverter
             classData.fields = new FieldData[fieldInfos.Length];
 
             for (int i = 0; i < fieldInfos.Length; i++)
+            {
+                //if (fieldInfos[i].IsPublic)
                 classData.fields[i] = FieldData.FromFieldInfo(fieldInfos[i], definitions);
+            }
 
             return classData;
         }

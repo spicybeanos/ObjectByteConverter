@@ -24,5 +24,9 @@ namespace ByteConverter
         DictionaryEnd = 255
 
     }
-
+    public enum SerializationTokens
+    {
+        EndOfDatagram,
+        Identifier
+    }
 }

@@ -5,7 +5,6 @@ namespace ByteConverter
     public enum MetaInfTokens
     {
         MetaInfEnd,
-        AssemblyQName,
         Size_TReader,
         StringEncoding,
         ClassName,
@@ -16,8 +15,7 @@ namespace ByteConverter
         public string ClassName { get; set; }
         public DataTypeID SizeTReader { get; set; }
         public StringEncodingMode stringEncodingMode { get; set; }
-        public bool IncludeAssemblyQualifiedName { get; set; } = false;
-        public int Length { get; set; }
+        public int Length { get; set; } = 0;
         public MetaInf(string className, DataTypeID sizeTReader,
          int length, StringEncodingMode stringEncoding)
         {
@@ -33,19 +31,21 @@ namespace ByteConverter
         public static byte[] GenerateMetaInfBytes(MetaInf metaInf)
         {
             return GenerateMetaInfBytes(metaInf.ClassName,
-             metaInf.SizeTReader, metaInf.Length, metaInf.stringEncodingMode,metaInf.IncludeAssemblyQualifiedName);
+             metaInf.SizeTReader, metaInf.Length, metaInf.stringEncodingMode);
+        }
+        public static int LengthOfMetaInf(MetaInf metaInf)
+        {
+            return GenerateMetaInfBytes(metaInf).Length;
         }
         public static byte[] GenerateMetaInfBytes
         (string className,
         DataTypeID sizeTReader, int Length,
-        StringEncodingMode stringEncodingMode, bool includeAssemblyQualifiedName)
+        StringEncodingMode stringEncodingMode)
         {
             List<byte> ret = new()
             {
                 (byte)MetaInfTokens.Size_TReader,
                 (byte)sizeTReader,
-                (byte)MetaInfTokens.AssemblyQName,
-                BoolToByte(includeAssemblyQualifiedName),
                 (byte)MetaInfTokens.ClassName
             };
             ret.AddRange(MStringToBytes(className));
@@ -55,10 +55,6 @@ namespace ByteConverter
             ret.Add((byte)stringEncodingMode);
             ret.Add((byte)MetaInfTokens.MetaInfEnd);
             return ret.ToArray();
-        }
-        private static byte BoolToByte(bool value)
-        {
-            return (byte)(value ? 1 : 0);
         }
         private static byte[] MStringToBytes(string value)
         {
@@ -114,12 +110,6 @@ namespace ByteConverter
                             inf.stringEncodingMode = mode;
                             break;
                         }
-                    case MetaInfTokens.AssemblyQName:
-                        {
-                            bool asm = ReadBool();
-                            inf.IncludeAssemblyQualifiedName = asm;
-                        }
-                        break;
                     case MetaInfTokens.MetaInfEnd:
                         break;
                     default:

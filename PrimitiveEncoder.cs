@@ -9,7 +9,7 @@ namespace ByteConverter
         Unicode,
         ASCII
     }
-    public class StandardEncoder
+    public class PrimitiveEncoder
     {
         public DataTypeID SizeT { get; private set; }
         public StringEncodingMode stringEncoding { get; private set; }
@@ -24,12 +24,12 @@ namespace ByteConverter
                 };
             }
         }
-        public StandardEncoder(DataTypeID size_t, StringEncodingMode mode)
+        public PrimitiveEncoder(DataTypeID size_t, StringEncodingMode mode)
         {
             SizeT = size_t;
             stringEncoding = mode;
         }
-        public StandardEncoder(MetaInf inf)
+        public PrimitiveEncoder(MetaInf inf)
         {
             SizeT = inf.SizeTReader;
             stringEncoding = inf.stringEncodingMode;
