@@ -2,13 +2,14 @@ using System.Text;
 
 namespace ByteConverter
 {
-    public enum MetaInfTokens
+    public enum MetaInfToken
     {
-        MetaInfEnd,
-        Size_TReader,
+
+        Size_TReader = 1,
         StringEncoding,
         ClassName,
-        Length
+        Length,
+        MetaInfEnd = 255,
     }
     public class MetaInf
     {
@@ -44,16 +45,16 @@ namespace ByteConverter
         {
             List<byte> ret = new()
             {
-                (byte)MetaInfTokens.Size_TReader,
+                (byte)MetaInfToken.Size_TReader,
                 (byte)sizeTReader,
-                (byte)MetaInfTokens.ClassName
+                (byte)MetaInfToken.ClassName
             };
             ret.AddRange(MStringToBytes(className));
-            ret.Add((byte)MetaInfTokens.Length);
+            ret.Add((byte)MetaInfToken.Length);
             ret.AddRange(Int32Writer(Length));
-            ret.Add((byte)MetaInfTokens.StringEncoding);
+            ret.Add((byte)MetaInfToken.StringEncoding);
             ret.Add((byte)stringEncodingMode);
-            ret.Add((byte)MetaInfTokens.MetaInfEnd);
+            ret.Add((byte)MetaInfToken.MetaInfEnd);
             return ret.ToArray();
         }
         private static byte[] MStringToBytes(string value)
@@ -79,46 +80,89 @@ namespace ByteConverter
         }
         public MetaInf Read()
         {
-            MetaInfTokens tok;
+            MetaInfToken tok;
             MetaInf inf = new();
             do
             {
-                tok = (MetaInfTokens)buffer.Dequeue();
+                tok = (MetaInfToken)buffer.Dequeue();
                 switch (tok)
                 {
-                    case MetaInfTokens.Size_TReader:
+                    case MetaInfToken.Size_TReader:
                         {
                             DataTypeID sizeT = (DataTypeID)buffer.Dequeue();
                             inf.SizeTReader = sizeT;
                         }
                         break;
-                    case MetaInfTokens.Length:
+                    case MetaInfToken.Length:
                         {
                             int len = ReadInt();
                             inf.Length = len;
                         }
                         break;
-                    case MetaInfTokens.ClassName:
+                    case MetaInfToken.ClassName:
                         {
                             string className = ReadMString();
                             inf.ClassName = className;
                         }
                         break;
-                    case MetaInfTokens.StringEncoding:
+                    case MetaInfToken.StringEncoding:
                         {
                             StringEncodingMode mode = (StringEncodingMode)buffer.Dequeue();
                             inf.stringEncodingMode = mode;
                             break;
                         }
-                    case MetaInfTokens.MetaInfEnd:
+                    case MetaInfToken.MetaInfEnd:
                         break;
                     default:
                         throw new Exception($"Invalid MetaInfToken {tok}");
                 }
             }
-            while (tok != MetaInfTokens.MetaInfEnd);
+            while (tok != MetaInfToken.MetaInfEnd);
             return inf;
         }
+        public static MetaInf ReadMetaInf(byte[] data, ref int pointer)
+        {
+            MetaInfToken tok;
+            MetaInf meta = new MetaInf();
+            do
+            {
+                tok = (MetaInfToken)data[pointer++];
+                switch (tok)
+                {
+                    case MetaInfToken.Size_TReader:
+                        {
+                            DataTypeID dt = (DataTypeID)data[pointer++];
+                            meta.SizeTReader = dt;
+                        }
+                        break;
+                    case MetaInfToken.Length:
+                        {
+                            int len = MReadInt(data, ref pointer);
+                        }
+                        break;
+                }
+            }
+            while (tok != MetaInfToken.MetaInfEnd);
+        }
+
+        private static int MReadInt(byte[] data, ref int pointer)
+        {
+            int val = BitConverter.ToInt32(data, pointer);
+            pointer += sizeof(int);
+            return val;
+        }
+        private static string MReadString(byte[] data, ref int pointer)
+        {
+            List<byte> buf = new();
+            byte b = data[pointer++]; 
+            do
+            {
+                buf.Add(b);
+                b = data[pointer++];
+            }while(b != 0);
+            return Encoding.ASCII.GetString(buf.ToArray());
+        }
+
         private bool ReadBool()
         {
             byte b = buffer.Dequeue();

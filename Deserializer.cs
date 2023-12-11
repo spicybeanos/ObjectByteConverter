@@ -22,13 +22,17 @@ namespace ByteConverter
     public class Deserializer
     {
         private byte[] data { get; set; }
-        private PrimitiveDecoder decoder { get; set; }
+        private PrimitiveDecoder Decoder { get; set; }
         private ClassDefinitions Definitions { get; set; }
         public Deserializer(byte[] data)
         {
             this.data = data;
         }
-        
+        public MetaInf DeserializeMeta()
+        {
+            MetaInfReader reader = new(data);
+            return reader.Read();
+        }
         public void Desialize<T>(ref T outputValue)
         {
             
@@ -40,13 +44,13 @@ namespace ByteConverter
             {
                 case DataTypeID.Null: return null;
                 case >= DataTypeID.Char and <= DataTypeID.String_array:
-                    return decoder.DecodePrimitive(data, ref pointer, typeID);
+                    return Decoder.DecodePrimitive(data, ref pointer, typeID);
                 default: throw new NotImplementedException("Not implimented object deserialization");
             }
         }
         public object DeserializeObject(ref int pointer)
         {
-            int classID = decoder.DecodeSizeT(data,ref pointer);
+            int classID = Decoder.DecodeSizeT(data,ref pointer);
             if (classID == ClassDefinitions.NULL_VALUE_CLASS_ID) return null;
 
             throw new NotImplementedException();
