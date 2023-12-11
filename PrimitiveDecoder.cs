@@ -29,9 +29,11 @@ namespace ByteConverter
         }
         public object DecodePrimitive(byte[] data, ref int pointer, DataTypeID type)
         {
-            if (DataTypes.IsFixed(type))
+            if(type == DataTypeID.Null)
+                return null;
+            else if (DataTypes.IsFixed(type))
                 return ReadFixed(data, ref pointer, type);
-            else if (DataTypes.IsArray(type))
+            else if (DataTypes.IsPrimitiveArray(type))
                 return ReadArray(data, ref pointer, type);
             else
                 throw new Exception($"{type} is not a primitive type!");

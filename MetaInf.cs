@@ -138,11 +138,28 @@ namespace ByteConverter
                     case MetaInfToken.Length:
                         {
                             int len = MReadInt(data, ref pointer);
+                            meta.Length = len;
                         }
                         break;
+                    case MetaInfToken.ClassName:
+                        {
+                            string cname = MReadString(data, ref pointer);
+                            meta.ClassName = cname;
+                        }
+                        break;
+                    case MetaInfToken.StringEncoding:
+                        {
+                            StringEncodingMode smode = (StringEncodingMode)data[pointer++];
+                            meta.stringEncodingMode = smode;
+                        }
+                        break;
+                    case MetaInfToken.MetaInfEnd:break;
+                    default:
+                        throw new Exception($"Invalid MetaInfToken {tok}");
                 }
             }
             while (tok != MetaInfToken.MetaInfEnd);
+            return meta;
         }
 
         private static int MReadInt(byte[] data, ref int pointer)
@@ -154,12 +171,12 @@ namespace ByteConverter
         private static string MReadString(byte[] data, ref int pointer)
         {
             List<byte> buf = new();
-            byte b = data[pointer++]; 
+            byte b = data[pointer++];
             do
             {
                 buf.Add(b);
                 b = data[pointer++];
-            }while(b != 0);
+            } while (b != 0);
             return Encoding.ASCII.GetString(buf.ToArray());
         }
 

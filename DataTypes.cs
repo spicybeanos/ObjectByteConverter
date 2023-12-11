@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace ByteConverter
 {
     public enum DataTypeID
@@ -37,7 +39,8 @@ namespace ByteConverter
         String_array,
         //unicode string
 
-        UserDefined
+        UserDefined,
+        UserDefinedArray
     }
     public class DataTypes
     {
@@ -94,7 +97,7 @@ namespace ByteConverter
                 DataTypeID.Int16 => sizeof(short),
                 DataTypeID.UInt16 => sizeof(ushort),
                 DataTypeID.Int32 => sizeof(int),
-                DataTypeID.UInt32 => sizeof (uint),
+                DataTypeID.UInt32 => sizeof(uint),
                 DataTypeID.Int64 => sizeof(long),
                 DataTypeID.UInt64 => sizeof(ulong),
                 DataTypeID.Float16 => sizeof(short),
@@ -107,15 +110,21 @@ namespace ByteConverter
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
+            if (type.GetInterfaces().Contains(typeof(IEnumerable)))
+                return DataTypeID.UserDefinedArray;
             return DataTypeID.UserDefined;
         }
         public static bool IsFixed(DataTypeID type)
         {
             return (int)type >= (int)DataTypeID.Char && (int)type <= (int)DataTypeID.Float64;
         }
-        public static bool IsArray(DataTypeID type)
+        public static bool IsArray(Type type)
         {
-            return (int)type >= (int)DataTypeID.Int8_array && (int) type <= (int)DataTypeID.String_array;
+            return type.GetInterfaces().Contains(typeof(IEnumerable));
+        }
+        public static bool IsPrimitiveArray(DataTypeID type)
+        {
+            return (int)type >= (int)DataTypeID.Int8_array && (int)type <= (int)DataTypeID.String_array;
         }
         public static bool IsPrimitive(DataTypeID type)
         {

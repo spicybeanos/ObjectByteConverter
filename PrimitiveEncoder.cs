@@ -39,7 +39,7 @@ namespace ByteConverter
         {
             if (DataTypes.IsFixed(type))
                 return EncodeFixed(value, type);
-            else if (DataTypes.IsArray(type))
+            else if (DataTypes.IsPrimitiveArray(type))
                 return EncodeArray(value, type);
             else
                 throw new Exception($"{type} is not a primitive type! Cannot use {nameof(EncodePrimitive)} to encode user defined types");

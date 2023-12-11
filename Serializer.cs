@@ -3,16 +3,21 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections;
 /*
     * not null
-    (token)identifier (string)name (datatypeid)[userdefined] (size_t)classID {object serilization}
-    (token)identifier (string)name (datatypeid)type value
+    (datatypeid)[userdefined] (size_t)classID {object serilization}
+    (datatypeid)primitive_type (serialize)value
+
+    * user defined array
+    array elements must all be the same type!!!
+    (datatypeid)[userdefined_array] (size_t)length (size_t)classID {object serilization} ,(size_t)classID {object serilization} ,(size_t)classID {object serilization}...n times
 
     * null
-    token)identifier (string)name (datatypeid)[null]
+    (token)identifier (string)name (datatypeid)[null]
 
     *not null inside a user defined type object serilization
-    [(datatypeid)type][value]
+    [(datatypeid)type] (serialize)value
     [DataTypeID.UserDefined][(size_t)classID]{serialized}
     
     *null inside a user defined type object serilization
@@ -26,7 +31,7 @@ namespace ByteConverter
     public class Serializer
     {
         private PrimitiveEncoder Encoder { get; set; }
-        private ClassDefinitions Definitions { get; set; }
+        public ClassDefinitions Definitions { get; set; }
         private MetaInf metaInf { get; set; }
 
         public Serializer(MetaInf metaInf)
@@ -55,13 +60,14 @@ namespace ByteConverter
         }
         private byte[] SerializeTypeDictionary(object value)
         {
-            Definitions.TryAddClass(value.GetType());
-            return ClassDefinitions.GetBytes(Definitions, Encoder);
+            if(Definitions.TryAddClass(value.GetType()))
+                return ClassDefinitions.GetBytes(Definitions, Encoder);
+            else
+                throw new Exception($"Failed to add type : {value.GetType()}");
         }
         private byte[] SeriliarizeBody(object value)
         {
             List<byte> body = new List<byte>();
-            Definitions.GetClassID(value.GetType());
             metaInf.ClassName = value.GetType().FullName;
             body.AddRange(SerializeValue(value));
             return body.ToArray();
@@ -71,8 +77,6 @@ namespace ByteConverter
             return MetaInfWriter.GenerateMetaInfBytes(metaInf);
         }
 #nullable enable
-
-
         private byte[] SerializeValue(object? value)
         {
             if (value == null)
@@ -86,6 +90,24 @@ namespace ByteConverter
             if (DataTypes.IsPrimitive(typeID))
             {
                 data.AddRange(Encoder.EncodePrimitive(value, typeID));
+                return data.ToArray();
+            }
+            if (value.GetType().IsArray)
+            {
+                IEnumerable? vals = value as IEnumerable;
+                if (vals == null)
+                    return new byte[] { (byte)DataTypeID.Null };
+
+                int ctr = 0;
+                foreach (var _ in vals)
+                {
+                    ctr++;
+                }
+                data.AddRange(Encoder.EncodeSizeT(ctr));
+                foreach (var item in vals)
+                {
+                    data.AddRange(SerializeUserDefinedValue(item));
+                }
                 return data.ToArray();
             }
             //handle user defined types

@@ -11,7 +11,7 @@ namespace ByteConverter
         private int ClassCounter { get; set; } = NULL_VALUE_CLASS_ID + 1;
 
         // class name to class id
-        private Dictionary<Type, int> ClassIDDictionary
+        public Dictionary<Type, int> ClassIDDictionary
         { get; set; }
 
         //class id to class info
@@ -22,7 +22,7 @@ namespace ByteConverter
         {
             ClassIDDictionary = new Dictionary<Type, int>();
             GlobalDefinitions = new Dictionary<int, ClassData>();
-            ClassCounter  = NULL_VALUE_CLASS_ID + 1;
+            ClassCounter = NULL_VALUE_CLASS_ID + 1;
         }
 
         /*
@@ -36,12 +36,12 @@ namespace ByteConverter
             {
                 s += $"\t{{name={type.FullName}:clsID={ClassIDDictionary[type]}}},\n";
             }
-            s+="]\n" + nameof(GlobalDefinitions) + ":[\n";
+            s += "]\n" + nameof(GlobalDefinitions) + ":[\n";
             foreach (var clsID in GlobalDefinitions.Keys)
             {
                 s += $"\t{{clsID={clsID}:fields={GlobalDefinitions[clsID].fields.Length}}},\n";
             }
-            s+="]\n";
+            s += "]\n";
             return s;
         }
         public static byte[] GetBytes(ClassDefinitions definitions, PrimitiveEncoder encoder)
@@ -96,7 +96,7 @@ namespace ByteConverter
             if (GlobalDefinitions.ContainsKey(classID))
                 return GlobalDefinitions[classID];
             else
-                throw new Exception($"A class defination for class id {classID.ToString("x2")} does not exist!");
+                throw new Exception($"A class defination for class id '{classID}' does not exist!");
         }
         public bool TryAddClass(Type type)
         {
@@ -107,6 +107,9 @@ namespace ByteConverter
 
                 if (ClassIDDictionary.ContainsKey(type))
                     return false;
+
+                if(type.IsArray)
+                    return TryAddClass(type.GetElementType());
 
                 FieldInfo[] fieldsIn = type.GetFields();
                 string className = type.FullName;
