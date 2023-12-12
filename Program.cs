@@ -24,29 +24,47 @@ class Program
         op.IncludeFields = true;
         ClassDefinitions definitions = new();
 
-        Lobby lobby = new();
-        lobby.players = new Player[]{new Player(){name = "among us"}};
-
+        Player player = new Player(){name = "am0hus"};
+        Lobby lobby = new()
+        {
+            players = new Player[] { new Player() { name = "among us" } }
+        };
         Serializer ser = new Serializer(metaInf);
+            int ptr_=0;
+            byte[] test = 
+            {0x01, 0x01 , 0x00 , 0x05 , 0x01 , 0x00 
+            , 0x03 , 0x05 , 0x00 , 0x4c , 0x6f , 0x62 
+            , 0x62 , 0x79 , 0x02 , 0x01 , 0x00 , 0x07 
+            , 0x1e , 0x06 , 0x07 , 0x00 , 0x70 , 0x6c 
+            , 0x61 , 0x79 , 0x65 , 0x72 , 0x73 , 0xfd 
+            , 0xfe , 0xff};
+        var test_ = ClassDefinitions.FromBytes(test,ref ptr_,decoder).DEBUG();
+        Console.WriteLine(test_);
+        Console.WriteLine(lobby.players.GetType().GetElementType());
 
         var bts = ser.Serialize(lobby);
-        Deserializer deserializer = new(bts);
+        Deserializer des = new(bts);
         Console.WriteLine("class dictionary:");
-        foreach (var cls in ser.Definitions.ClassIDDictionary.Keys)
-        {
-            Console.WriteLine($"{{{cls}:{ser.Definitions.ClassIDDictionary[cls]}}}");
-        }
+        Console.WriteLine(ser.Definitions.DEBUG());
 
-        var json = JsonSerializer.Serialize(lobby,op);
+        var json = JsonSerializer.Serialize(lobby, op);
         Console.WriteLine($"length : {bts.Length}");
         Console.WriteLine(ByteArrayToString(bts));
         Console.WriteLine($"json length : {json.Length}");
         Console.WriteLine(json);
+        try
+        {
+            var obj = des.Deserialize();
 
-        var obj = deserializer.Deserialize();
+            Console.WriteLine("deserialized object:");
+            Console.WriteLine(JsonSerializer.Serialize(obj, op));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(des.Definitions.DEBUG());
+            Console.WriteLine(ex);
+        }
 
-        Console.WriteLine("deserialized object:");
-        Console.WriteLine(JsonSerializer.Serialize(obj,op));
     }
     private static string ByteArrayToString(byte[] arrInput)
     {
@@ -60,16 +78,17 @@ class Program
         return sOutput.ToString();
     }
 }
-class Lobby{
+class Lobby
+{
     public Player[] players;
 }
-class Player{
+class Player
+{
     public string name;
 }
 class Transform
 {
     public string name = "";
-    public string[] array;
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
     public bool ValueEquality(Transform t)

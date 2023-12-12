@@ -60,10 +60,11 @@ namespace ByteConverter
         }
         private byte[] SerializeTypeDictionary(object value)
         {
-            if(Definitions.TryAddClass(value.GetType()))
+            Result r = Definitions.TryAddClass(value.GetType());
+            if(r.Success)
                 return ClassDefinitions.GetBytes(Definitions, Encoder);
             else
-                throw new Exception($"Failed to add type : {value.GetType()}");
+                throw new Exception($"Failed to add type : {r.exception}");
         }
         private byte[] SeriliarizeBody(object value)
         {

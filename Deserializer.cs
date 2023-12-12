@@ -25,7 +25,7 @@ namespace ByteConverter
         private byte[] data { get; set; }
         private PrimitiveDecoder Decoder { get; set; }
         private MetaInf metaInf;
-        private ClassDefinitions Definitions { get; set; }
+        public ClassDefinitions Definitions { get; set; }
         public Deserializer(byte[] data)
         {
             this.data = data;

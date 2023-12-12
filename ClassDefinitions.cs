@@ -11,7 +11,7 @@ namespace ByteConverter
         private int ClassCounter { get; set; } = NULL_VALUE_CLASS_ID + 1;
 
         // class name to class id
-        public Dictionary<Type, int> ClassIDDictionary
+        private Dictionary<Type, int> ClassIDDictionary
         { get; set; }
 
         //class id to class info
@@ -87,8 +87,14 @@ namespace ByteConverter
         {
             if (ClassIDDictionary.ContainsKey(type))
                 return ClassIDDictionary[type];
-            if (!TryAddClass(type))
-                return PRIMITIVE_TYPE_CLASS_ID;
+            Result r = TryAddClass(type);
+            if (!r.Success)
+            {
+                if(r.exception is NotUserDefinedException)
+                    return PRIMITIVE_TYPE_CLASS_ID;
+                else
+                    throw new CouldNotDefineTypeException(type,r.exception);
+            }
             return ClassIDDictionary[type];
         }
         public ClassData GetClassData(int classID)
@@ -98,19 +104,24 @@ namespace ByteConverter
             else
                 throw new Exception($"A class defination for class id '{classID}' does not exist!");
         }
-        public bool TryAddClass(Type type)
+        public Result TryAddClass(Type type)
         {
             try
             {
                 if (DataTypes.GetDataTypeIDFromType(type) != DataTypeID.UserDefined)
-                    return false;
+                    return Result.Failed(new NotUserDefinedException(type));
 
                 if (ClassIDDictionary.ContainsKey(type))
-                    return false;
+                    return Result.Successful();
 
-                if(type.IsArray)
-                    return TryAddClass(type.GetElementType());
-
+                if (type.IsArray)
+                {
+                    Type elTy = type.GetElementType();
+                    Console.WriteLine($"element type : {elTy}");
+                    Result r = TryAddClass(elTy);
+                    if (!r.Success)
+                        throw new Exception($"Could not add type : '{elTy}'. array type : '{type}'\n{r.exception}");
+                }
                 FieldInfo[] fieldsIn = type.GetFields();
                 string className = type.FullName;
                 int classID = ClassCounter++;
@@ -133,13 +144,12 @@ namespace ByteConverter
                     GlobalDefinitions[classID].fields[i] = FieldData.FromFieldInfo(fieldsIn[i], this);
 
 
-                return true;
+                return Result.Successful();
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return Result.Failed(ex);
             }
         }
     }
-
 }

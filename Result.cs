@@ -59,4 +59,6 @@ public class Result
         Success = success;
         exception = ex;
     }
+    public static Result Failed(Exception ex) => new Result(ex);
+    public static Result Successful () => new Result(true);
 }

@@ -9,7 +9,7 @@ namespace ByteConverter
         StringEncoding,
         ClassName,
         Length,
-        MetaInfEnd = 255,
+        MetaInfEnd = 252,
     }
     public class MetaInf
     {
