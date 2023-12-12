@@ -25,18 +25,18 @@ namespace ByteConverter
         private byte[] data { get; set; }
         private PrimitiveDecoder Decoder { get; set; }
         private MetaInf metaInf;
-        public ClassDefinitions Definitions { get; set; }
+        private ClassDefinitions Definitions { get; set; }
         public Deserializer(byte[] data)
         {
             this.data = data;
 
         }
-        public void DeserializeMeta(ref int pointer)
+        private void DeserializeMeta(ref int pointer)
         {
             metaInf = MetaInfReader.ReadMetaInf(data, ref pointer);
             Decoder = new PrimitiveDecoder(metaInf);
         }
-        public void DeserializeClassDefinations(ref int pointer)
+        private void DeserializeClassDefinations(ref int pointer)
         {
             Definitions = ClassDefinitions.FromBytes(data, ref pointer, Decoder);
         }
@@ -47,7 +47,7 @@ namespace ByteConverter
             DeserializeClassDefinations(ref ptr);
             return DeserializeValue(ref ptr);
         }
-        public object DeserializeValue(ref int pointer)
+        private object DeserializeValue(ref int pointer)
         {
             DataTypeID typeID = (DataTypeID)data[pointer++];
             switch (typeID)
@@ -58,25 +58,12 @@ namespace ByteConverter
                     return Decoder.DecodePrimitive(data, ref pointer, typeID);
                 case DataTypeID.UserDefined: 
                     return DeserializeObject(ref pointer);
-                case DataTypeID.UserDefinedArray:
-                    return DeserializeObjectArray(ref pointer);
                 default:
                     throw new Exception($"Cannot deserialize data type '{typeID}'");
             }
         }
-        public object DeserializeObjectArray(ref int pointer)
-        {
-            int length = Decoder.DecodeSizeT(data,ref pointer);
-            object el0 = DeserializeObject(ref pointer);
-            IList arr = (IList)Activator.CreateInstance(el0.GetType().MakeArrayType());
-            arr.Add(el0);
-            for (int i = 1; i < length; i++)
-            {
-                arr.Add(DeserializeObject(ref pointer));
-            }
-            return arr;
-        }
-        public object DeserializeObject(ref int pointer)
+
+        private object DeserializeObject(ref int pointer)
         {
             int classID = Decoder.DecodeSizeT(data, ref pointer);
             if (classID == ClassDefinitions.NULL_VALUE_CLASS_ID) return null;
@@ -105,18 +92,12 @@ namespace ByteConverter
                 if (DataTypes.IsPrimitive( typeID))
                 {
                     var value = Decoder.DecodePrimitive(data, ref pointer, typeID);
-                    Console.WriteLine(fname + ":" + value);
                     varObjVal.Add(fname, value);
                 }
                 else if (typeID == DataTypeID.UserDefined)
                 {
                     var value = DeserializeObject(ref pointer);
                     varObjVal.Add(fname, value);
-                }
-                else if(typeID == DataTypeID.UserDefinedArray)
-                {
-                    var val = DeserializeObjectArray(ref pointer);
-                    varObjVal.Add(fname,val);
                 }
                 else{
                     throw new Exception($"Unexpected type \'{typeID}\' for field '{cdata.ClassFullName}.{fname}'");
@@ -127,7 +108,6 @@ namespace ByteConverter
                 if (!varObjVal.ContainsKey(field.Name))
                     continue;
                 field.SetValue(cobj, varObjVal[field.Name]);
-                Console.WriteLine(field.Name + ":" + field.GetValue(cobj));
             }
             return cobj;
         }

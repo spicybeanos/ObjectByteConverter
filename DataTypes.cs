@@ -39,8 +39,7 @@ namespace ByteConverter
         String_array,
         //unicode string
 
-        UserDefined,
-        UserDefinedArray
+        UserDefined
     }
     public class DataTypes
     {
@@ -110,8 +109,6 @@ namespace ByteConverter
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
-            if (type.GetInterfaces().Contains(typeof(IEnumerable)))
-                return DataTypeID.UserDefinedArray;
             return DataTypeID.UserDefined;
         }
         public static bool IsFixed(DataTypeID type)

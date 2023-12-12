@@ -114,14 +114,7 @@ namespace ByteConverter
                 if (ClassIDDictionary.ContainsKey(type))
                     return Result.Successful();
 
-                if (type.IsArray)
-                {
-                    Type elTy = type.GetElementType();
-                    Console.WriteLine($"element type : {elTy}");
-                    Result r = TryAddClass(elTy);
-                    if (!r.Success)
-                        throw new Exception($"Could not add type : '{elTy}'. array type : '{type}'\n{r.exception}");
-                }
+                
                 FieldInfo[] fieldsIn = type.GetFields();
                 string className = type.FullName;
                 int classID = ClassCounter++;
