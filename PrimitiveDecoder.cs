@@ -29,7 +29,7 @@ namespace ByteConverter
         }
         public object DecodePrimitive(byte[] data, ref int pointer, DataTypeID type)
         {
-            if(type == DataTypeID.Null)
+            if (type == DataTypeID.Null)
                 return null;
             else if (DataTypes.IsFixed(type))
                 return ReadFixed(data, ref pointer, type);
@@ -42,8 +42,13 @@ namespace ByteConverter
         {
             return (T)DecodePrimitive(data, ref pointer, DataTypes.GetDataTypeIDFromType(typeof(T)));
         }
-        public int DecodeSizeT(byte[] data, ref int pointer){
-            return ReadLength(data,ref pointer);
+        public int DecodeSizeT(byte[] data, ref int pointer)
+        {
+            return ReadLength(data, ref pointer);
+        }
+        public DataTypeID DecodeDatatypeID(byte[] data, ref int pointer)
+        {
+            return (DataTypeID)data[pointer++];
         }
         private int ReadLength(byte[] data, ref int pointer)
         {

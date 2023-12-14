@@ -49,7 +49,7 @@ namespace ByteConverter
         }
         private object DeserializeValue(ref int pointer)
         {
-            DataTypeID typeID = (DataTypeID)data[pointer++];
+            DataTypeID typeID = Decoder.DecodeDatatypeID(data,ref pointer);
             switch (typeID)
             {
                 case DataTypeID.Null: 
@@ -76,7 +76,7 @@ namespace ByteConverter
             {
                 cobj = Activator.CreateInstance(ctype);
             }
-            catch (System.MissingMethodException ex)
+            catch (MissingMethodException ex)
             {
                 throw new Exception($"Make sure all objects invloved have atleast one parameterless consturctor!\nClass : {cdata.ClassFullName}\n" + ex);
             }

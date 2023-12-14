@@ -23,20 +23,33 @@ class Program
         op.IncludeFields = true;
         ClassDefinitions definitions = new();
 
-        Transform t = new(){position = new(1,3,4),rotation=new(2,43,4,-2),name="amongus"};
+        Lobby l = new Lobby(){
+            t1=new("first"),
+            t2=new("sec"),
+            t3=new("thi"),
+            t4=new("for"),
+            t5=new("fiv"),
+            t6=new("six"),
+            t7=new("sev"),
+            t8=new("eigh"),
+            t9=new("ninth"),
+            t10=new("tenth"),
+        };
 
         Serializer ser = new(metaInf);
 
-        var json = JsonSerializer.Serialize(t,op);
-        var bts = ser.Serialize(t);
-        Console.WriteLine($"serialized object: \n{ByteArrayToString(bts)}");
-        Console.WriteLine($"Json :\n{json}");
+        var json = JsonSerializer.Serialize(l,op);
+        var bts = ser.Serialize(l);
+
         Console.WriteLine($"byte\t|\tjson\n{bts.Length}\t|\t{json.Length}");
 
         Deserializer des = new(bts);
         var obj = des.Deserialize();
 
-        Console.WriteLine(JsonSerializer.Serialize(obj,op));
+        Console.WriteLine(l.ValueEquality((Lobby)obj));
+
+        Console.WriteLine(json);
+        Console.WriteLine(ByteArrayToString(bts));
     }
     private static string ByteArrayToString(byte[] arrInput, bool hex = true)
     {
@@ -50,11 +63,31 @@ class Program
         return sOutput.ToString();
     }
 }
+
+class Lobby{
+    public Transform t1,t2,t3,t4,t5,t6,t7,t8,t9,t10;
+
+    internal bool ValueEquality(Lobby obj)
+    {
+        return t1.ValueEquality(obj.t1) &&
+        t2.ValueEquality(obj.t2) &&
+        t3.ValueEquality(obj.t3) &&
+        t4.ValueEquality(obj.t4) &&
+        t5.ValueEquality(obj.t5) &&
+        t6.ValueEquality(obj.t6) &&
+        t7.ValueEquality(obj.t7) &&
+        t8.ValueEquality(obj.t8) &&
+        t9.ValueEquality(obj.t9) &&
+        t10.ValueEquality(obj.t10) ;
+    }
+}
 class Transform
 {
     public string name = "";
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
+    public Transform(){}
+    public Transform(string msg){name = msg;}
     public bool ValueEquality(Transform t)
     {
         return name == t.name && rotation.ValueEquality(t.rotation) && position.ValueEquality(t.position);
