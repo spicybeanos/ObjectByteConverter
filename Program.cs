@@ -23,22 +23,27 @@ class Program
         op.IncludeFields = true;
         ClassDefinitions definitions = new();
 
-        Lobby l = new Lobby(){
-            t1=new("first"),
-            t2=new("sec"),
-            t3=new("thi"),
-            t4=new("for"),
-            t5=new("fiv"),
-            t6=new("six"),
-            t7=new("sev"),
-            t8=new("eigh"),
-            t9=new("ninth"),
-            t10=new("tenth"),
+        Lobby l = new Lobby()
+        {
+            t = new Transform[]
+            {
+                new("first"),
+                new("sec"),
+                new("thi"),
+                new("for"),
+                new("fiv"),
+                new("six"),
+                new("sev"),
+                new("eigh"),
+                new("ninth"),
+                new("tenth")
+            }
+
         };
 
         Serializer ser = new(metaInf);
 
-        var json = JsonSerializer.Serialize(l,op);
+        var json = JsonSerializer.Serialize(l, op);
         var bts = ser.Serialize(l);
 
         Console.WriteLine($"byte\t|\tjson\n{bts.Length}\t|\t{json.Length}");
@@ -49,7 +54,9 @@ class Program
         Console.WriteLine(l.ValueEquality((Lobby)obj));
 
         Console.WriteLine(json);
-        Console.WriteLine(ByteArrayToString(bts));
+        string js2 = JsonSerializer.Serialize(obj,op);
+        Console.WriteLine(js2);
+        //Console.WriteLine(ByteArrayToString(bts));
     }
     private static string ByteArrayToString(byte[] arrInput, bool hex = true)
     {
@@ -64,21 +71,18 @@ class Program
     }
 }
 
-class Lobby{
-    public Transform t1,t2,t3,t4,t5,t6,t7,t8,t9,t10;
-
-    internal bool ValueEquality(Lobby obj)
+class Lobby
+{
+    public Transform[] t;
+    public bool ValueEquality(Lobby l)
     {
-        return t1.ValueEquality(obj.t1) &&
-        t2.ValueEquality(obj.t2) &&
-        t3.ValueEquality(obj.t3) &&
-        t4.ValueEquality(obj.t4) &&
-        t5.ValueEquality(obj.t5) &&
-        t6.ValueEquality(obj.t6) &&
-        t7.ValueEquality(obj.t7) &&
-        t8.ValueEquality(obj.t8) &&
-        t9.ValueEquality(obj.t9) &&
-        t10.ValueEquality(obj.t10) ;
+        if (l.t.Length != t.Length) return false;
+        for (int i = 0; i < t.Length; i++)
+        {
+            if (!t[i].ValueEquality(l.t[i]))
+                return false;
+        }
+        return true;
     }
 }
 class Transform
@@ -86,8 +90,8 @@ class Transform
     public string name = "";
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
-    public Transform(){}
-    public Transform(string msg){name = msg;}
+    public Transform() { }
+    public Transform(string msg) { name = msg; }
     public bool ValueEquality(Transform t)
     {
         return name == t.name && rotation.ValueEquality(t.rotation) && position.ValueEquality(t.position);

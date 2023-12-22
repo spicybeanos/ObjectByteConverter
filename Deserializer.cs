@@ -49,14 +49,14 @@ namespace ByteConverter
         }
         private object DeserializeValue(ref int pointer)
         {
-            DataTypeID typeID = Decoder.DecodeDatatypeID(data,ref pointer);
+            DataTypeID typeID = Decoder.DecodeDatatypeID(data, ref pointer);
             switch (typeID)
             {
-                case DataTypeID.Null: 
+                case DataTypeID.Null:
                     return null;
                 case >= DataTypeID.Char and <= DataTypeID.String_array:
                     return Decoder.DecodePrimitive(data, ref pointer, typeID);
-                case DataTypeID.UserDefined: 
+                case DataTypeID.UserDefined:
                     return DeserializeObject(ref pointer);
                 default:
                     throw new Exception($"Cannot deserialize data type '{typeID}'");
@@ -89,7 +89,7 @@ namespace ByteConverter
             {
                 DataTypeID typeID = (DataTypeID)data[pointer++];
                 string fname = cdata.fields[i].FieldName;
-                if (DataTypes.IsPrimitive( typeID))
+                if (DataTypes.IsPrimitive(typeID))
                 {
                     var value = Decoder.DecodePrimitive(data, ref pointer, typeID);
                     varObjVal.Add(fname, value);
@@ -99,7 +99,21 @@ namespace ByteConverter
                     var value = DeserializeObject(ref pointer);
                     varObjVal.Add(fname, value);
                 }
-                else{
+                else if (typeID == DataTypeID.UserDefinedArray)
+                {
+                    int length = Decoder.DecodeSizeT(data,ref pointer);
+                    var first = DeserializeObject(ref pointer);
+                    Type arrayType = first.GetType().MakeArrayType();
+                    Array list = (Array)Activator.CreateInstance(arrayType,length);
+                    list.SetValue(first,0);
+                    for (int j = 1; j < length; j++)
+                    {
+                        list.SetValue(DeserializeObject(ref pointer),i);
+                    }
+                    varObjVal.Add(fname ,list);
+                }
+                else
+                {
                     throw new Exception($"Unexpected type \'{typeID}\' for field '{cdata.ClassFullName}.{fname}'");
                 }
             }

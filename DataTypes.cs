@@ -39,7 +39,8 @@ namespace ByteConverter
         String_array,
         //unicode string
 
-        UserDefined
+        UserDefined,
+        UserDefinedArray
     }
     public class DataTypes
     {
@@ -109,6 +110,8 @@ namespace ByteConverter
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
+            if(type.IsArray)
+                return DataTypeID.UserDefinedArray;
             return DataTypeID.UserDefined;
         }
         public static bool IsFixed(DataTypeID type)
@@ -126,6 +129,9 @@ namespace ByteConverter
         public static bool IsPrimitive(DataTypeID type)
         {
             return (int)type >= (int)DataTypeID.Null && (int)type <= (int)DataTypeID.String_array;
+        }
+        public static bool IsUserDefined(DataTypeID type){
+            return type == DataTypeID.UserDefined || type == DataTypeID.UserDefinedArray;
         }
     }
 }

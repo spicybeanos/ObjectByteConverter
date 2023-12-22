@@ -45,6 +45,7 @@ public class Result
 {
     public bool Success { get; set; }
     public Exception exception { get; set; }
+    private static readonly Result succesful_result = new Result(true);
     public Result(bool success)
     {
         Success = success;
@@ -60,5 +61,5 @@ public class Result
         exception = ex;
     }
     public static Result Failed(Exception ex) => new Result(ex);
-    public static Result Successful () => new Result(true);
+    public static Result Successful () => succesful_result;
 }

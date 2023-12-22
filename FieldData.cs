@@ -26,11 +26,13 @@ namespace ByteConverter
                 (byte)DefToken.FieldDataType,
                 (byte)fieldData.FieldDataType
             };
-            if (fieldData.FieldClassID > -1)
+
+            if (fieldData.FieldClassID > ClassDefinitions.PRIMITIVE_TYPE_CLASS_ID)
             {
                 ret.Add((byte)DefToken.FieldClassID);
                 ret.AddRange(encoder.EncodeSizeT(fieldData.FieldClassID));
             }
+            
             ret.Add((byte)DefToken.FieldName);
             ret.AddRange(encoder.EncodePrimitive(fieldData.FieldName));
             ret.Add((byte)DefToken.FieldDataEnd);
@@ -47,7 +49,7 @@ namespace ByteConverter
                 switch (tok)
                 {
                     case DefToken.FieldDataType:
-                        DataTypeID dt = (DataTypeID)data[pointer++];
+                        DataTypeID dt = decoder.DecodeDatatypeID(data,ref pointer);
                         fieldData.FieldDataType = dt;
                         break;
                     case DefToken.FieldName:

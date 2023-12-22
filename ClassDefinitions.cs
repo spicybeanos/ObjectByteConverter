@@ -87,13 +87,15 @@ namespace ByteConverter
         {
             if (ClassIDDictionary.ContainsKey(type))
                 return ClassIDDictionary[type];
+            if (type.IsArray)
+                return GetClassID(type.GetElementType());
             Result r = TryAddClass(type);
             if (!r.Success)
             {
-                if(r.exception is NotUserDefinedException)
+                if (r.exception is NotUserDefinedException)
                     return PRIMITIVE_TYPE_CLASS_ID;
                 else
-                    throw new CouldNotDefineTypeException(type,r.exception);
+                    throw new CouldNotDefineTypeException(type, r.exception);
             }
             return ClassIDDictionary[type];
         }
@@ -108,36 +110,47 @@ namespace ByteConverter
         {
             try
             {
-                if (DataTypes.GetDataTypeIDFromType(type) != DataTypeID.UserDefined)
+                DataTypeID dt = DataTypes.GetDataTypeIDFromType(type);
+                if (!DataTypes.IsUserDefined(dt))
                     return Result.Failed(new NotUserDefinedException(type));
 
                 if (ClassIDDictionary.ContainsKey(type))
                     return Result.Successful();
 
-                
-                FieldInfo[] fieldsIn = type.GetFields();
-                string className = type.FullName;
-                int classID = ClassCounter++;
-
-                //check if the class has already been listed
-
-
-                ClassData classData = new()
+                if (dt == DataTypeID.UserDefined)
                 {
-                    ClassFullName = className,
-                    ClassID = classID,
-                    fields = new FieldData[fieldsIn.Length]
-                };
+                    FieldInfo[] fieldsIn = type.GetFields();
+                    string className = type.FullName;
+                    int classID = ClassCounter++;
 
-                ClassIDDictionary.Add(type, classID);
-                GlobalDefinitions.Add(classID, classData);
-
-                //populate the field data
-                for (int i = 0; i < fieldsIn.Length; i++)
-                    GlobalDefinitions[classID].fields[i] = FieldData.FromFieldInfo(fieldsIn[i], this);
+                    //check if the class has already been listed
 
 
-                return Result.Successful();
+                    ClassData classData = new()
+                    {
+                        ClassFullName = className,
+                        ClassID = classID,
+                        fields = new FieldData[fieldsIn.Length]
+                    };
+
+                    ClassIDDictionary.Add(type, classID);
+                    GlobalDefinitions.Add(classID, classData);
+
+                    //populate the field data
+                    for (int i = 0; i < fieldsIn.Length; i++)
+                    {
+                        GlobalDefinitions[classID].fields[i] = FieldData.FromFieldInfo(fieldsIn[i], this);
+                    }
+
+
+                    return Result.Successful();
+                }
+                else
+                {
+                    Type et = type.GetElementType();
+                    return TryAddClass(et);
+                }
+
             }
             catch (Exception ex)
             {

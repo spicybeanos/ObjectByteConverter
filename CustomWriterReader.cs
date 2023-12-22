@@ -6,7 +6,7 @@ namespace ByteConverter
     public class CustomWriterReader
     {
         public Type type { get; private set; }
-        public virtual byte[] WriteObject(object obj, PrimitiveEncoder encoder)
+        public virtual byte[] WriteObject(object obj, PrimitiveEncoder encoder,ClassDefinitions definitions)
         {
             return null;
         }
