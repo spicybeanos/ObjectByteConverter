@@ -40,7 +40,9 @@ namespace ByteConverter
         //unicode string
 
         UserDefined,
-        UserDefinedArray
+        UserDefinedArray,
+
+        CustomType
     }
     public class DataTypes
     {

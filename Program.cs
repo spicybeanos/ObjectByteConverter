@@ -25,20 +25,11 @@ class Program
 
         Lobby l = new Lobby()
         {
-            t = new Transform[]
-            {
-                new("first"),
-                new("sec"),
-                new("thi"),
-                new("for"),
-                new("fiv"),
-                new("six"),
-                new("sev"),
-                new("eigh"),
-                new("ninth"),
-                new("tenth")
+            players = new Player[]{
+                new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.zero,rotation = Quaternion.Identity}},
+                new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.up,rotation = Quaternion.Identity}},
+                new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.right,rotation = Quaternion.Identity}},
             }
-
         };
 
         Serializer ser = new(metaInf);
@@ -54,7 +45,7 @@ class Program
         Console.WriteLine(l.ValueEquality((Lobby)obj));
 
         Console.WriteLine(json);
-        string js2 = JsonSerializer.Serialize(obj,op);
+        string js2 = JsonSerializer.Serialize(obj, op);
         Console.WriteLine(js2);
         //Console.WriteLine(ByteArrayToString(bts));
     }
@@ -73,31 +64,40 @@ class Program
 
 class Lobby
 {
-    public Transform[] t;
+    public Player[] players;
     public bool ValueEquality(Lobby l)
     {
-        if (l.t.Length != t.Length) return false;
-        for (int i = 0; i < t.Length; i++)
+        if (l.players.Length != players.Length) return false;
+        for (int i = 0; i < players.Length; i++)
         {
-            if (!t[i].ValueEquality(l.t[i]))
+            if (!players[i].ValueEquality(l.players[i]))
                 return false;
         }
         return true;
     }
 }
-class Transform
+internal class Player
 {
-    public string name = "";
+    public string Name;
+    public long ID;
+    public Transform transform;
+
+    internal bool ValueEquality(Player player)
+    {
+        return Name == player.Name && ID == player.ID && transform.ValueEquality(player.transform);
+    }
+}
+internal class Transform
+{
     public Quaternion rotation = Quaternion.Identity;
     public Vector3 position = Vector3.zero;
     public Transform() { }
-    public Transform(string msg) { name = msg; }
     public bool ValueEquality(Transform t)
     {
-        return name == t.name && rotation.ValueEquality(t.rotation) && position.ValueEquality(t.position);
+        return rotation.ValueEquality(t.rotation) && position.ValueEquality(t.position);
     }
 }
-class Quaternion
+internal class Quaternion
 {
     public float x = 0, y = 0, z = 0, w = 0;
     public Quaternion(float x, float y, float z, float w)
@@ -115,7 +115,7 @@ class Quaternion
     private static readonly Quaternion iden = new Quaternion(0, 0, 0, 0);
     public static Quaternion Identity { get { return iden; } }
 }
-class Vector3
+internal class Vector3
 {
     public float x = 0, y = 0, z = 0;
     public Vector3()
@@ -133,9 +133,13 @@ class Vector3
         this.z = z;
     }
     private static Vector3 zeroV = new Vector3(0, 0, 0);
+    private static Vector3 upV = new Vector3(0, 1, 0);
+    private static Vector3 rtV = new Vector3(1, 0, 0);
     public static Vector3 zero { get { return zeroV; } }
+    public static Vector3 up { get { return upV; } }
+    public static Vector3 right { get { return rtV; } }
 }
-class Vector3Int
+internal class Vector3Int
 {
     public int x = 0, y = 0, z = 0;
     public Vector3Int(int x, int y, int z)

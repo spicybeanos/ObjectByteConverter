@@ -101,16 +101,16 @@ namespace ByteConverter
                 }
                 else if (typeID == DataTypeID.UserDefinedArray)
                 {
-                    int length = Decoder.DecodeSizeT(data,ref pointer);
+                    int length = Decoder.DecodeSizeT(data, ref pointer);
                     var first = DeserializeObject(ref pointer);
                     Type arrayType = first.GetType().MakeArrayType();
-                    Array list = (Array)Activator.CreateInstance(arrayType,length);
-                    list.SetValue(first,0);
+                    Array list = (Array)Activator.CreateInstance(arrayType, length);
+                    list.SetValue(first, 0);
                     for (int j = 1; j < length; j++)
                     {
-                        list.SetValue(DeserializeObject(ref pointer),i);
+                        list.SetValue(DeserializeObject(ref pointer), j);
                     }
-                    varObjVal.Add(fname ,list);
+                    varObjVal.Add(fname, list);
                 }
                 else
                 {
