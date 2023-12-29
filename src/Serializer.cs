@@ -32,7 +32,7 @@ namespace ByteConverter
     {
         private PrimitiveEncoder Encoder { get; set; }
         public ClassDefinitions Definitions { get; set; }
-        private MetaInf metaInf { get; set; }
+        public MetaInf metaInf { get; set; }
 
         public Serializer(MetaInf metaInf)
         {
@@ -61,7 +61,7 @@ namespace ByteConverter
         private byte[] SerializeTypeDictionary(object value)
         {
             Result r = Definitions.TryAddClass(value.GetType());
-            if(r.Success)
+            if (r.Success)
                 return ClassDefinitions.GetBytes(Definitions, Encoder);
             else
                 throw new Exception($"Failed to add type : {r.exception}");
@@ -73,7 +73,7 @@ namespace ByteConverter
             body.AddRange(SerializeValue(value));
             return body.ToArray();
         }
-        public byte[] GetMetaInfBytes()
+        private byte[] GetMetaInfBytes()
         {
             return MetaInfWriter.GenerateMetaInfBytes(metaInf);
         }
