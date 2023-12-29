@@ -1,21 +1,15 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text;
 using ByteConverter;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
-using System.Reflection;
-using System.Collections;
-using System.Linq.Expressions;
 
-class Program
+internal class Program
 {
     static void Main(string[] args)
     {
         MetaInf metaInf = new()
         {
             stringEncodingMode = StringEncodingMode.UTF8,
-            SizeTReader = DataTypeID.UInt16
+            SizeT = DataTypeID.UInt16
         };
         PrimitiveEncoder encoder = new(metaInf);
         PrimitiveDecoder decoder = new(metaInf);
@@ -23,31 +17,51 @@ class Program
         op.IncludeFields = true;
         ClassDefinitions definitions = new();
 
-        Lobby l = new Lobby()
+        Lobby lobby = new Lobby()
         {
             players = new Player[]{
                 new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.zero,rotation = Quaternion.Identity}},
-                new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.up,rotation = Quaternion.Identity}},
-                new Player(){Name = "joe" , ID = 32, transform = new Transform(){position = Vector3.right,rotation = Quaternion.Identity}},
+                null,
+                new Player(){Name = "ian" , ID = 393, transform = new Transform(){position = Vector3.up,rotation = Quaternion.Identity}},
+                new Player(){Name = "spoon" , ID = -2252, transform = new Transform(){position = Vector3.right,rotation = Quaternion.Identity}},
+            }
+        };
+
+        LinkedList list = new()
+        {
+            data = 1,
+            next = new()
+            {
+                data = 2,
+                next = new()
+                {
+                    data = 3,
+                    next = new()
+                    {
+                        data = 4,
+                        next = new()
+                        {
+                            data = 5,
+                            next = null
+                        }
+                    }
+                }
             }
         };
 
         Serializer ser = new(metaInf);
 
-        var json = JsonSerializer.Serialize(l, op);
-        var bts = ser.Serialize(l);
+        var json = JsonSerializer.Serialize(lobby, op);
+        var bts = ser.Serialize(lobby);
 
         Console.WriteLine($"byte\t|\tjson\n{bts.Length}\t|\t{json.Length}");
 
         Deserializer des = new(bts);
         var obj = des.Deserialize();
 
-        Console.WriteLine(l.ValueEquality((Lobby)obj));
-
-        Console.WriteLine(json);
+        //Console.WriteLine("Are they equal by value? = " + lobby.ValueEquality((Lobby)obj));
+        ((Lobby)obj).Print();
         string js2 = JsonSerializer.Serialize(obj, op);
-        Console.WriteLine(js2);
-        //Console.WriteLine(ByteArrayToString(bts));
     }
     private static string ByteArrayToString(byte[] arrInput, bool hex = true)
     {
@@ -61,8 +75,26 @@ class Program
         return sOutput.ToString();
     }
 }
+internal class LinkedList
+{
+    public int data;
+    public LinkedList next;
 
-class Lobby
+    public bool ValueEquality(LinkedList list)
+    {
+        bool a = data == list.data;
+        bool b;
+        if (next != null && list.next != null)
+            b = next.ValueEquality(list.next);
+        else if (next == null && list.next == null)
+            b = true;
+        else
+            b = false;
+
+        return a && b;
+    }
+}
+internal class Lobby
 {
     public Player[] players;
     public bool ValueEquality(Lobby l)
@@ -70,10 +102,24 @@ class Lobby
         if (l.players.Length != players.Length) return false;
         for (int i = 0; i < players.Length; i++)
         {
+            if ((players[i] == null) ^ (l.players[i] == null))
+            {
+                return false;
+            }
             if (!players[i].ValueEquality(l.players[i]))
                 return false;
         }
         return true;
+    }
+    public void Print()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if(players[i] != null)
+                Console.WriteLine($"Name = {players[i].Name}");
+            else
+                Console.WriteLine("Null");   
+        }
     }
 }
 internal class Player

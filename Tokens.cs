@@ -9,7 +9,6 @@ namespace ByteConverter
         ClassFeilds,
         //std string
         ClassFullName,
-        ClassAssemblyQualifiedName,
         //int32
         ClassID,
         //std string
@@ -22,11 +21,5 @@ namespace ByteConverter
         FieldDataEnd = 253,
         ClassDataEnd = 254,
         DictionaryEnd = 255
-
-    }
-    public enum SerializationTokens
-    {
-        EndOfDatagram,
-        Identifier
     }
 }

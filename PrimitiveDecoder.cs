@@ -12,7 +12,7 @@ namespace ByteConverter
             {
                 return new()
                 {
-                    SizeTReader = sizeT,
+                    SizeT = sizeT,
                     stringEncodingMode = stringEncoding
                 };
             }
@@ -24,7 +24,7 @@ namespace ByteConverter
         }
         public PrimitiveDecoder(MetaInf inf)
         {
-            sizeT = inf.SizeTReader;
+            sizeT = inf.SizeT;
             stringEncoding = inf.stringEncodingMode;
         }
         public object DecodePrimitive(byte[] data, ref int pointer, DataTypeID type)
@@ -143,10 +143,6 @@ namespace ByteConverter
                     val_ = BitConverter.ToUInt64(data, pointer);
                     pointer += sizeof(ulong);
                     break;
-                case DataTypeID.Float16:
-                    val_ = BitConverter.ToHalf(data, pointer);
-                    pointer += sizeof(short);
-                    break;
                 case DataTypeID.Float32:
                     val_ = BitConverter.ToSingle(data, pointer);
                     pointer += sizeof(float);
@@ -188,8 +184,6 @@ namespace ByteConverter
                     return m_ReadFixedArray<long>(data, ref pointer);
                 case DataTypeID.UInt64_array:
                     return m_ReadFixedArray<ulong>(data, ref pointer);
-                case DataTypeID.Float16_array:
-                    return m_ReadFixedArray<Half>(data, ref pointer);
                 case DataTypeID.Float32_array:
                     return m_ReadFixedArray<float>(data, ref pointer);
                 case DataTypeID.Float64_array:

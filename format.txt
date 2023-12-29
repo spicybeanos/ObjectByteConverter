@@ -1,5 +1,0 @@
---[metainf]
-className (Meta String)
-size t reader (Data type)
-datagram length (meta int32)
-meta inf end token

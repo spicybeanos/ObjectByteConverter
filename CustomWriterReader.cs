@@ -3,7 +3,7 @@
 
 namespace ByteConverter
 {
-
+    //WIP
     public interface CustomSerializer
     {
         public byte[] WriteObject(object obj, PrimitiveEncoder encoder, ClassDefinitions definitions);

@@ -5,7 +5,7 @@ namespace ByteConverter
     public enum MetaInfToken
     {
 
-        Size_TReader = 1,
+        Size_T = 1,
         StringEncoding,
         ClassName,
         Length,
@@ -14,14 +14,14 @@ namespace ByteConverter
     public class MetaInf
     {
         public string ClassName { get; set; }
-        public DataTypeID SizeTReader { get; set; }
+        public DataTypeID SizeT { get; set; }
         public StringEncodingMode stringEncodingMode { get; set; }
         public int Length { get; set; } = 0;
         public MetaInf(string className, DataTypeID sizeTReader,
          int length, StringEncodingMode stringEncoding)
         {
             ClassName = className;
-            SizeTReader = sizeTReader;
+            SizeT = sizeTReader;
             stringEncodingMode = stringEncoding;
             Length = length;
         }
@@ -32,7 +32,7 @@ namespace ByteConverter
         public static byte[] GenerateMetaInfBytes(MetaInf metaInf)
         {
             return GenerateMetaInfBytes(metaInf.ClassName,
-             metaInf.SizeTReader, metaInf.Length, metaInf.stringEncodingMode);
+             metaInf.SizeT, metaInf.Length, metaInf.stringEncodingMode);
         }
         public static int LengthOfMetaInf(MetaInf metaInf)
         {
@@ -45,7 +45,7 @@ namespace ByteConverter
         {
             List<byte> ret = new()
             {
-                (byte)MetaInfToken.Size_TReader,
+                (byte)MetaInfToken.Size_T,
                 (byte)sizeTReader,
                 (byte)MetaInfToken.ClassName
             };
@@ -87,10 +87,10 @@ namespace ByteConverter
                 tok = (MetaInfToken)buffer.Dequeue();
                 switch (tok)
                 {
-                    case MetaInfToken.Size_TReader:
+                    case MetaInfToken.Size_T:
                         {
                             DataTypeID sizeT = (DataTypeID)buffer.Dequeue();
-                            inf.SizeTReader = sizeT;
+                            inf.SizeT = sizeT;
                         }
                         break;
                     case MetaInfToken.Length:
@@ -129,10 +129,10 @@ namespace ByteConverter
                 tok = (MetaInfToken)data[pointer++];
                 switch (tok)
                 {
-                    case MetaInfToken.Size_TReader:
+                    case MetaInfToken.Size_T:
                         {
                             DataTypeID dt = (DataTypeID)data[pointer++];
-                            meta.SizeTReader = dt;
+                            meta.SizeT = dt;
                         }
                         break;
                     case MetaInfToken.Length:

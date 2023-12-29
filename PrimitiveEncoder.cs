@@ -3,12 +3,7 @@ using System.Text;
 
 namespace ByteConverter
 {
-    public enum StringEncodingMode
-    {
-        UTF8,
-        Unicode,
-        ASCII
-    }
+
     public class PrimitiveEncoder
     {
         public DataTypeID SizeT { get; private set; }
@@ -19,7 +14,7 @@ namespace ByteConverter
             {
                 return new()
                 {
-                    SizeTReader = SizeT,
+                    SizeT = SizeT,
                     stringEncodingMode = stringEncoding
                 };
             }
@@ -31,7 +26,7 @@ namespace ByteConverter
         }
         public PrimitiveEncoder(MetaInf inf)
         {
-            SizeT = inf.SizeTReader;
+            SizeT = inf.SizeT;
             stringEncoding = inf.stringEncodingMode;
         }
 
@@ -121,9 +116,6 @@ namespace ByteConverter
                 case DataTypeID.UInt64:
                     ret.AddRange(BitConverter.GetBytes((ulong)value));
                     break;
-                case DataTypeID.Float16:
-                    ret.AddRange(BitConverter.GetBytes((Half)value));
-                    break;
                 case DataTypeID.Float32:
                     ret.AddRange(BitConverter.GetBytes((float)value));
                     break;
@@ -204,14 +196,6 @@ namespace ByteConverter
                 case DataTypeID.UInt64_array:
                     {
                         var arr = (IEnumerable<ulong>)value;
-                        int len = arr.Count();
-                        ret.AddRange(EncodeLength(len));
-                        ret.AddRange(EncodeFixedArray(arr));
-                    }
-                    break;
-                case DataTypeID.Float16_array:
-                    {
-                        var arr = (IEnumerable<Half>)value;
                         int len = arr.Count();
                         ret.AddRange(EncodeLength(len));
                         ret.AddRange(EncodeFixedArray(arr));

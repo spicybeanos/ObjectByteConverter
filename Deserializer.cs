@@ -24,8 +24,8 @@ namespace ByteConverter
     {
         private byte[] data { get; set; }
         private PrimitiveDecoder Decoder { get; set; }
-        private MetaInf metaInf;
-        private ClassDefinitions Definitions { get; set; }
+        public MetaInf metaInf { get; set; }
+        public ClassDefinitions Definitions { get; set; }
         public Deserializer(byte[] data)
         {
             this.data = data;
@@ -36,15 +36,27 @@ namespace ByteConverter
             metaInf = MetaInfReader.ReadMetaInf(data, ref pointer);
             Decoder = new PrimitiveDecoder(metaInf);
         }
+        // Gets the length of the byte array to be deserialized
+        public int GetLength(int index = 0)
+        {
+            MetaInf m = MetaInfReader.ReadMetaInf(data, ref index);
+            return m.Length;
+        }
+        public int GetEndingIndex(int index = 0)
+        {
+            return index + GetLength(index);
+        }
         private void DeserializeClassDefinations(ref int pointer)
         {
             Definitions = ClassDefinitions.FromBytes(data, ref pointer, Decoder);
         }
-        public object Deserialize()
+        public object Deserialize(bool deserializeMeta = true, bool deserializeClassDefinations = true)
         {
             int ptr = 0;
-            DeserializeMeta(ref ptr);
-            DeserializeClassDefinations(ref ptr);
+            if (deserializeMeta)
+                DeserializeMeta(ref ptr);
+            if (deserializeClassDefinations)
+                DeserializeClassDefinations(ref ptr);
             return DeserializeValue(ref ptr);
         }
         private object DeserializeValue(ref int pointer)

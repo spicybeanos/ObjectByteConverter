@@ -16,7 +16,6 @@ namespace ByteConverter
         UInt32,
         Int64,
         UInt64,
-        Float16,
         Float32,
         Float64,
 
@@ -31,7 +30,6 @@ namespace ByteConverter
         UInt32_array,
         Int64_array,
         UInt64_array,
-        Float16_array,
         Float32_array,
         Float64_array,
         StdString,
@@ -43,6 +41,12 @@ namespace ByteConverter
         UserDefinedArray,
 
         CustomType
+    }
+    public enum StringEncodingMode
+    {
+        UTF8,
+        Unicode,
+        ASCII
     }
     public class DataTypes
     {
@@ -59,7 +63,6 @@ namespace ByteConverter
             {typeof(uint),DataTypeID.UInt32},
             {typeof(ulong),DataTypeID.UInt64},
             {typeof(float),DataTypeID.Float32},
-            {typeof(Half),DataTypeID.Float16},
             {typeof(double),DataTypeID.Float64},
             {typeof(char),DataTypeID.Char},
             {typeof(bool),DataTypeID.Boolean},
@@ -73,7 +76,6 @@ namespace ByteConverter
             {typeof(ushort[]),DataTypeID.UInt16_array},
             {typeof(uint[]),DataTypeID.UInt32_array},
             {typeof(ulong[]),DataTypeID.UInt64_array},
-            {typeof(Half[]),DataTypeID.Float16_array},
             {typeof(float[]),DataTypeID.Float32_array},
             {typeof(double[]),DataTypeID.Float64_array},
             {typeof(char[]),DataTypeID.StdString},
@@ -102,7 +104,6 @@ namespace ByteConverter
                 DataTypeID.UInt32 => sizeof(uint),
                 DataTypeID.Int64 => sizeof(long),
                 DataTypeID.UInt64 => sizeof(ulong),
-                DataTypeID.Float16 => sizeof(short),
                 DataTypeID.Float32 => sizeof(float),
                 DataTypeID.Float64 => sizeof(double),
                 _ => throw new NotSupportedException($"type {type} does not have a fixed size!")
