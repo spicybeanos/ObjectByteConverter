@@ -1,11 +1,11 @@
-## What can `ObjectByteConverter` serialize?
-- Objects of simple classes (that is classed composed only of only primitives)
-- Objects of compund classes (that is classed composing both primitives and objects)
+## What can `ObjectByteConverter` serialize/deserialize?
+- Objects of simple classes (that is classes composed only of only primitives)
+- Objects of compund classes (that is classes composing both primitives and objects)
 - Objects of classes refering itself that terminate with `null` (example : linked lists)
 - *One dimensional* arrays of the above mentioned type of objects and primitive types
 
 ## MetaInf
-- `MetaInf.SizeT` dictates how to read/write the length of any array and how to read/write the `class ID` of any user defined type.
+- `MetaInf.SizeT` determines the type to read/write the length of any array and the type to read/write the `class ID` of any user defined type.
 - `MetaInf.ClassName` is the name of the objects's class
 - `MetaInf.stringEncodingMode` determines the encoding used to serialize and deserialize strings
 - `MetaInf.Length` is the length of the datagram produced after serializing
@@ -13,7 +13,9 @@
 ## How to use this library
 ### Serialization
 1. Import `ByteConverter`.
-```using ByteConverter;```
+```
+using ByteConverter;
+```
 2. Set up the meta inf
 ```
 MetaInf meta = new()
@@ -23,16 +25,26 @@ MetaInf meta = new()
 }; 
 ```
 3. Instantiate the `Serializer`
-```Serializer serializer = new (meta);```
+```
+Serializer serializer = new (meta);
+```
 1. Serialize the object
-```byte[] data = serializer.Serialize(obj);```
+```
+byte[] data = serializer.Serialize(obj);
+```
 ### Deserialization
 1. Import `ByteConverter`.
-```using ByteConverter;```
+```
+using ByteConverter;
+```
 2. Instantiate the `deserializer` with the data you want to deserialize
-   ```Deserializer deserializer = new (data)```
+```
+Deserializer deserializer = new (data)
+```
 3. Deserialize
-   ```object obj = deserializer.Deserialize();```
+```
+object obj = deserializer.Deserialize();
+```
 
 ## Primitive types:
 - Fixed sized primitive types
