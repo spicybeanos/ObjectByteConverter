@@ -2,7 +2,6 @@ obj/
 .vscode/
 bin/
 .vs/
-obj\
 obj/Debug/net6.0/ObjectByteConverter.assets.cache
 obj/Debug/net6.0/ObjectByteConverter.GeneratedMSBuildEditorConfig.editorconfig
 obj/ObjectByteConverter.csproj.nuget.dgspec.json
