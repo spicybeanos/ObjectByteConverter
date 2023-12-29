@@ -13,20 +13,26 @@
 ## How to use this library
 ### Serialization
 1. Import `ByteConverter`.
+```using ByteConverter;```
 2. Set up the meta inf
 ```
 MetaInf meta = new()
 {
     stringEncodingMode = StringEncodingMode.UTF8,
     SizeT = DataTypeID.UInt16
-};
+}; 
 ```
-3. Instantiate `Serializer`
-```
-Serializer serializer = new Serializer(meta);
-```
-4. Serialize the objectL
-   `var data = serializer.Serialize(obj);`
+3. Instantiate the `Serializer`
+```Serializer serializer = new (meta);```
+1. Serialize the object
+```byte[] data = serializer.Serialize(obj);```
+### Deserialization
+1. Import `ByteConverter`.
+```using ByteConverter;```
+2. Instantiate the `deserializer` with the data you want to deserialize
+   ```Deserializer deserializer = new (data)```
+3. Deserialize
+   ```object obj = deserializer.Deserialize();```
 
 ## Primitive types:
 - Fixed sized primitive types
