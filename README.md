@@ -39,7 +39,7 @@ using ByteConverter;
 ```
 2. Instantiate the `deserializer` with the data you want to deserialize
 ```
-Deserializer deserializer = new (data)
+Deserializer deserializer = new (data);
 ```
 3. Deserialize
 ```
