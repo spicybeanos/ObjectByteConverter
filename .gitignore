@@ -8,3 +8,4 @@ obj/ObjectByteConverter.csproj.nuget.dgspec.json
 obj/ObjectByteConverter.csproj.nuget.g.props
 obj/project.assets.json
 obj/project.nuget.cache
+Program.cs
