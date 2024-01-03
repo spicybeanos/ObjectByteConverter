@@ -43,7 +43,7 @@ Deserializer deserializer = new (data);
 ```
 1. Deserialize
 ```
-object obj = deserializer.Deserialize();
+var obj = deserializer.Deserialize();
 ```
 
 ## Primitive types:
@@ -60,9 +60,7 @@ object obj = deserializer.Deserialize();
     - Array of characters (treated as a string)
     - Array of strings
 
-## Objects:
-- Objects are copied by value during serialization
-- So, if `n` fields reffer to one object, there will be `n` copies of that object. After deserialization the final object will be equal by value but not by refference
+
 
 ### Integers and floating point numbers:
 - Serialization of integers and floats is done by the `ByteConverter.PrimitiveEncoder` class using the `System.BitConverter` library.
@@ -73,3 +71,7 @@ object obj = deserializer.Deserialize();
 - ASCII
 - UTF8
 - Unicode
+
+## Objects:
+- Objects are copied by value during serialization
+- So, if `n` fields reffer to one object, there will be `n` copies of that object. After deserialization the final object will be equal by value but not by refference
