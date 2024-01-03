@@ -44,7 +44,7 @@ namespace ByteConverter
     }
     public enum StringEncodingMode
     {
-        UTF8,
+        UTF8 = 1,
         Unicode,
         ASCII
     }

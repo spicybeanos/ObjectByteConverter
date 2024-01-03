@@ -31,17 +31,12 @@ namespace ByteConverter
         */
         public string DEBUG()
         {
-            string s = nameof(ClassIDDictionary) + ":[\n";
+            string s = "class\t|\tID\n";
+            s += "----------------\n";
             foreach (var type in ClassIDDictionary.Keys)
             {
-                s += $"\t{{name={type.FullName}:clsID={ClassIDDictionary[type]}}},\n";
+                s += $"{type}\t|\t{ClassIDDictionary[type]}\n";
             }
-            s += "]\n" + nameof(GlobalDefinitions) + ":[\n";
-            foreach (var clsID in GlobalDefinitions.Keys)
-            {
-                s += $"\t{{clsID={clsID}:fields={GlobalDefinitions[clsID].fields.Length}}},\n";
-            }
-            s += "]\n";
             return s;
         }
         public static byte[] GetBytes(ClassDefinitions definitions, PrimitiveEncoder encoder)
@@ -101,7 +96,8 @@ namespace ByteConverter
         }
         public ClassData GetClassData(int classID)
         {
-            if(classID == PRIMITIVE_TYPE_CLASS_ID){
+            if (classID == PRIMITIVE_TYPE_CLASS_ID)
+            {
                 throw new Exception($"Cannot get class definition for {nameof(PRIMITIVE_TYPE_CLASS_ID)}!");
             }
             if (GlobalDefinitions.ContainsKey(classID))
