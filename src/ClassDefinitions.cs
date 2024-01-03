@@ -101,6 +101,9 @@ namespace ByteConverter
         }
         public ClassData GetClassData(int classID)
         {
+            if(classID == PRIMITIVE_TYPE_CLASS_ID){
+                throw new Exception($"Cannot get class definition for {nameof(PRIMITIVE_TYPE_CLASS_ID)}!");
+            }
             if (GlobalDefinitions.ContainsKey(classID))
                 return GlobalDefinitions[classID];
             else

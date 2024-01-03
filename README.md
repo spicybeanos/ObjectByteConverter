@@ -60,6 +60,10 @@ object obj = deserializer.Deserialize();
     - Array of characters (treated as a string)
     - Array of strings
 
+## Objects
+- Objects are copied by value during serialization
+- So, if `n` fields reffer to one object, there will be `n` copies of that object. After deserialization the final object will be equal by value but not by refference
+
 ### Integers and floating point numbers:
 - Serialization of integers and floats is done by the `ByteConverter.PrimitiveEncoder` class using the `System.BitConverter` library.
 - Deserialization of integers and floats is done by the `ByteConverter.PrimitiveDecoder` class using the `System.BitConverter` library.

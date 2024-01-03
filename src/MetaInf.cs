@@ -25,6 +25,19 @@ namespace ByteConverter
             stringEncodingMode = stringEncoding;
             Length = length;
         }
+        public MetaInf(DataTypeID sizeTReader,
+         int length, StringEncodingMode stringEncoding)
+        {
+            SizeT = sizeTReader;
+            stringEncodingMode = stringEncoding;
+            Length = length;
+        }
+        public MetaInf(DataTypeID sizeTReader,
+          StringEncodingMode stringEncoding)
+        {
+            SizeT = sizeTReader;
+            stringEncodingMode = stringEncoding;
+        }
         public MetaInf() { }
     }
     public class MetaInfWriter
