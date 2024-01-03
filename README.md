@@ -37,11 +37,11 @@ byte[] data = serializer.Serialize(obj);
 ```
 using ByteConverter;
 ```
-2. Instantiate the `deserializer` with the data you want to deserialize
+1. Instantiate the `deserializer` with the `Deserializer(byte[] data)` constructor where `data` is the data you want to deserialize
 ```
 Deserializer deserializer = new (data);
 ```
-3. Deserialize
+1. Deserialize
 ```
 object obj = deserializer.Deserialize();
 ```
@@ -60,7 +60,7 @@ object obj = deserializer.Deserialize();
     - Array of characters (treated as a string)
     - Array of strings
 
-## Objects
+## Objects:
 - Objects are copied by value during serialization
 - So, if `n` fields reffer to one object, there will be `n` copies of that object. After deserialization the final object will be equal by value but not by refference
 
