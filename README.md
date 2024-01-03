@@ -37,7 +37,7 @@ byte[] data = serializer.Serialize(obj);
 ```
 using ByteConverter;
 ```
-1. Instantiate the `deserializer` with the `Deserializer(byte[] data)` constructor where `data` is the data you want to deserialize
+1. Instantiate the `deserializer` with the `Deserializer(byte[])` constructor. Here `data` is the data you want to deserialize
 ```
 Deserializer deserializer = new (data);
 ```
