@@ -75,3 +75,14 @@ var obj = deserializer.Deserialize();
 ## Objects:
 - Objects are copied by value during serialization
 - So, if `n` fields reffer to one object, there will be `n` copies of that object. After deserialization the final object will be equal by value but not by refference
+
+## Structure of the byte array
+<meta_info>
+    size_t : the data type used to encode the Class ID and lengths of arrays
+    string_encoding : the string encoding used
+    class_name : name of the class serialized
+    length : length of the entire serialized array (meta if + dictionary + body)
+</meta_info>
+<dictionary>
+
+</dictionary>

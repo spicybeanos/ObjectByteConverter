@@ -93,7 +93,7 @@ namespace ByteConverter
                 data.AddRange(Encoder.EncodePrimitive(value, typeID));
                 return data.ToArray();
             }
-            if (value.GetType().IsArray)
+            if (value.GetType().IsSZArray)
             {
                 IEnumerable? vals = value as IEnumerable;
                 if (vals == null)
@@ -142,5 +142,7 @@ namespace ByteConverter
 
             return data.ToArray();
         }
+
+        
     }
 }

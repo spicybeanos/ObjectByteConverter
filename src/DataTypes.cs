@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection;
 
 namespace ByteConverter
 {
@@ -40,7 +41,8 @@ namespace ByteConverter
         UserDefined,
         UserDefinedArray,
 
-        CustomType
+        CustomType,
+        AnyNDArray
     }
     public enum StringEncodingMode
     {
@@ -113,6 +115,11 @@ namespace ByteConverter
         {
             if (_type_dataTypeID.ContainsKey(type))
                 return _type_dataTypeID[type];
+            
+            if(!type.IsSZArray){
+                return DataTypeID.AnyNDArray;
+            }
+            
             if(type.IsArray)
                 return DataTypeID.UserDefinedArray;
             return DataTypeID.UserDefined;
