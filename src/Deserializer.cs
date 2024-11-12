@@ -26,10 +26,11 @@ namespace ByteConverter
         private PrimitiveDecoder Decoder { get; set; }
         public MetaInf metaInf { get; set; }
         public ClassDefinitions Definitions { get; set; }
+        private Dictionary<string,Type> LoggedTypes { get; set; }
         public Deserializer(byte[] data)
         {
             this.data = data;
-
+            LoggedTypes = new Dictionary<string,Type>();
         }
         private void DeserializeMeta(ref int pointer)
         {
@@ -75,12 +76,22 @@ namespace ByteConverter
             }
         }
 
+        private Type GetLoggedType(string typeName)
+        {
+            if(!LoggedTypes.ContainsKey(typeName))
+                LoggedTypes.Add(typeName, Type.GetType(typeName));
+
+            return LoggedTypes[typeName];
+        }
+
         private object DeserializeObject(ref int pointer)
         {
             int classID = Decoder.DecodeSizeT(data, ref pointer);
             if (classID == ClassDefinitions.NULL_VALUE_CLASS_ID) return null;
             ClassData cdata = Definitions.GetClassData(classID);
-            Type ctype = Type.GetType(cdata.ClassFullName);
+
+            Type ctype = GetLoggedType(cdata.ClassFullName);
+
             FieldInfo[] finfo = ctype.GetFields();
             Dictionary<string, object> varObjVal = new();
             object cobj;

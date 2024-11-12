@@ -9,12 +9,14 @@ namespace ByteConverter
         StringEncoding,
         ClassName,
         Length,
+        IsLittleEndian,
         MetaInfEnd = 252,
     }
     public class MetaInf
     {
         public string ClassName { get; set; }
         public DataTypeID SizeT { get; set; }
+        public bool IsLittleEndian {get;set;}
         public StringEncodingMode stringEncodingMode { get; set; }
         public int Length { get; set; } = 0;
         public MetaInf(string className, DataTypeID sizeTReader,

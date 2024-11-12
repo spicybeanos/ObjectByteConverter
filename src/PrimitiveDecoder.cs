@@ -5,6 +5,7 @@ namespace ByteConverter
     public class PrimitiveDecoder
     {
         public StringEncodingMode stringEncoding { get; private set; }
+        public bool IsLittleEndian{get;private set;}
         public DataTypeID sizeT { get; private set; }
         public MetaInf DecoderMetaInf
         {
@@ -13,19 +14,22 @@ namespace ByteConverter
                 return new()
                 {
                     SizeT = sizeT,
-                    stringEncodingMode = stringEncoding
+                    stringEncodingMode = stringEncoding,
+                    IsLittleEndian = IsLittleEndian
                 };
             }
         }
-        public PrimitiveDecoder(DataTypeID size_t, StringEncodingMode stringEncodingMode)
+        public PrimitiveDecoder(DataTypeID size_t, StringEncodingMode stringEncodingMode,bool isLittleEndian)
         {
             stringEncoding = stringEncodingMode;
             sizeT = size_t;
+            IsLittleEndian = isLittleEndian;
         }
         public PrimitiveDecoder(MetaInf inf)
         {
             sizeT = inf.SizeT;
             stringEncoding = inf.stringEncodingMode;
+            IsLittleEndian = inf.IsLittleEndian;
         }
         public object DecodePrimitive(byte[] data, ref int pointer, DataTypeID type)
         {
@@ -55,7 +59,7 @@ namespace ByteConverter
             long val_ = 0;
             switch (sizeT)
             {
-                case DataTypeID.Int8:
+                case DataTypeID.UInt8:
                     val_ = data[pointer];
                     pointer += sizeof(byte);
                     break;
@@ -111,7 +115,7 @@ namespace ByteConverter
                     val_ = BitConverter.ToBoolean(data, pointer);
                     pointer += sizeof(bool);
                     break;
-                case DataTypeID.Int8:
+                case DataTypeID.UInt8:
                     val_ = data[pointer];
                     pointer += sizeof(byte);
                     break;

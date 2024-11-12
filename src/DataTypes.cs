@@ -9,7 +9,7 @@ namespace ByteConverter
         Null,
         Char,
         Boolean,
-        Int8,
+        UInt8,
         SInt8,
         Int16,
         UInt16,
@@ -56,7 +56,7 @@ namespace ByteConverter
         _type_dataTypeID = new Dictionary<Type, DataTypeID>()
         {
 
-            {typeof(byte),DataTypeID.Int8},
+            {typeof(byte),DataTypeID.UInt8},
             {typeof(short),DataTypeID.Int16},
             {typeof(int),DataTypeID.Int32},
             {typeof(long),DataTypeID.Int64},
@@ -98,7 +98,7 @@ namespace ByteConverter
                 DataTypeID.Null => 0,
                 DataTypeID.Char => sizeof(char),
                 DataTypeID.Boolean => sizeof(bool),
-                DataTypeID.Int8 => sizeof(byte),
+                DataTypeID.UInt8 => sizeof(byte),
                 DataTypeID.SInt8 => sizeof(sbyte),
                 DataTypeID.Int16 => sizeof(short),
                 DataTypeID.UInt16 => sizeof(ushort),
