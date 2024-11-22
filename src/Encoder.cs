@@ -48,9 +48,7 @@ namespace ByteConverter
                 throw new Exception($"Cannot encode an object!");
             }
 
-            if (type == PrimType.Array) {
-
-            }
+            if (type == PrimType.Array) { }
 
             if (type == PrimType.String)
             {
@@ -63,9 +61,154 @@ namespace ByteConverter
             }
         }
 
-        private byte[] EncodeArray(object value){
+        private byte[] EncodeArray(object value)
+        {
             var type = DataType.GetArrayType(value);
-            
+            byte[] data;
+            //                [array_type+token][type of the array][length of the array]
+            int datagramStart = sizeof(byte) + sizeof(byte) + DataType.SizeOf(lengthEncoding);
+            int length;
+            switch (type)
+            {
+                case PrimType.Bool:
+
+                    {
+                        bool[] a = (bool[])value;
+                        length = a.Length;
+                        data = new byte[a.Length + datagramStart];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j++)
+                        {
+                            data[j] = (byte)(a[i] ? 1 : 0);
+                        }
+                    }
+                    break;
+                case PrimType.UInt8:
+
+                    {
+                        byte[] a = (byte[])value;
+                        length = a.Length;
+                        data = new byte[a.Length + datagramStart];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j++)
+                        {
+                            data[j] = a[i];
+                        }
+                    }
+                    break;
+                case PrimType.Int16:
+
+                    {
+                        short[] a = (short[])value;
+                        length = a.Length;
+                        int size_t = sizeof(short);
+                        data = new byte[datagramStart + a.Length * size_t];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j += size_t)
+                        {
+                            byte[] bf = BitConverter.GetBytes(a[i]);
+                            data[j] = bf[0];
+                            data[j + 1] = bf[1];
+                        }
+                    }
+                    break;
+                case PrimType.Int32:
+
+                    {
+                        int[] a = (int[])value;
+                        length = a.Length;
+                        int size_t = sizeof(int);
+                        data = new byte[datagramStart + a.Length * size_t];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j += size_t)
+                        {
+                            byte[] bf = BitConverter.GetBytes(a[i]);
+                            data[j] = bf[0];
+                            data[j + 1] = bf[1];
+                            data[j + 2] = bf[2];
+                            data[j + 3] = bf[3];
+                        }
+                    }
+                    break;
+                case PrimType.Int64:
+
+                    {
+                        long[] a = (long[])value;
+                        length = a.Length;
+                        int size_t = sizeof(long);
+                        data = new byte[datagramStart + a.Length * size_t];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j += size_t)
+                        {
+                            byte[] bf = BitConverter.GetBytes(a[i]);
+                            data[j] = bf[0];
+                            data[j + 1] = bf[1];
+                            data[j + 2] = bf[2];
+                            data[j + 3] = bf[3];
+                            data[j + 4] = bf[4];
+                            data[j + 5] = bf[5];
+                            data[j + 6] = bf[6];
+                            data[j + 7] = bf[7];
+                        }
+                    }
+                    break;
+                case PrimType.Float32:
+
+                    {
+                        float[] a = (float[])value;
+                        length = a.Length;
+                        int size_t = sizeof(float);
+                        data = new byte[datagramStart + a.Length * size_t];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j += size_t)
+                        {
+                            byte[] bf = BitConverter.GetBytes(a[i]);
+                            data[j] = bf[0];
+                            data[j + 1] = bf[1];
+                            data[j + 2] = bf[2];
+                            data[j + 3] = bf[3];
+                        }
+                    }
+                    break;
+                case PrimType.Float64:
+
+                    {
+                        double[] a = (double[])value;
+                        length = a.Length;
+                        int size_t = sizeof(double);
+                        data = new byte[datagramStart + a.Length * size_t];
+                        for (int i = 0, j = datagramStart; i < a.Length; i++, j += size_t)
+                        {
+                            byte[] bf = BitConverter.GetBytes(a[i]);
+                            data[j] = bf[0];
+                            data[j + 1] = bf[1];
+                            data[j + 2] = bf[2];
+                            data[j + 3] = bf[3];
+                            data[j + 4] = bf[4];
+                            data[j + 5] = bf[5];
+                            data[j + 6] = bf[6];
+                            data[j + 7] = bf[7];
+                        }
+                    }
+                    break;
+                case PrimType.String:
+                {
+                    string[] a = (string[])value;
+                    length = a.Length;
+                    int blen = 0;
+                    byte[][] bf = new byte[length][];
+                    for (int i = 0; i < length; i++)
+                    {
+                        bf[i] = EncodeString(a[i]);
+                        blen += bf[i].Length;
+                    }
+                    data = new byte[datagramStart+blen];
+                    for (int i = 0,j=datagramStart; i < length; i++)
+                    {
+                        Buffer.BlockCopy(bf[i],0,data,j,bf[i].Length);
+                        j += bf[i].Length;
+                    }
+                }
+                break;
+                default:
+                throw new Exception($"Cannot contruct this type of array : {type.ToString()}");
+            }
+
+            data[0] = 
         }
 
         private byte[] EncodeSingleValue(object value, PrimType type)
@@ -91,7 +234,7 @@ namespace ByteConverter
             }
         }
 
-        public byte[] EncodeString(string value)
+        private byte[] EncodeString(string value)
         {
             byte[] str;
 
