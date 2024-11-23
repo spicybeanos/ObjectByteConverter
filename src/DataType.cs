@@ -1,13 +1,15 @@
 namespace ByteConverter
 {
-    public enum StringEncoding{
-        UTF8,
+    public enum StringEncoding
+    {
+        UTF8 = 1,
         ASCII,
         Unicode
     }
-    public enum PrimType : byte 
+
+    public enum PrimType : byte
     {
-        Null,
+        Null = 0,
         Type,
         Object,
         Bool,
@@ -21,9 +23,12 @@ namespace ByteConverter
         String
     }
 
-    public class DataType {
-        public static PrimType GetType(object obj){
-            return obj switch {
+    public class DataType
+    {
+        public static PrimType GetType(object obj)
+        {
+            return obj switch
+            {
                 null => PrimType.Null,
                 bool => PrimType.Bool,
                 byte => PrimType.UInt8,
@@ -33,7 +38,7 @@ namespace ByteConverter
                 float => PrimType.Float32,
                 double => PrimType.Float64,
                 string => PrimType.String,
-                
+
                 bool[] => PrimType.Array,
                 byte[] => PrimType.Array,
                 short[] => PrimType.Array,
@@ -46,8 +51,10 @@ namespace ByteConverter
             };
         }
 
-        public static PrimType GetArrayType(object obj){
-            return obj switch {
+        public static PrimType GetArrayType(object obj)
+        {
+            return obj switch
+            {
                 null => PrimType.Null,
                 bool[] => PrimType.Bool,
                 byte[] => PrimType.UInt8,
@@ -61,8 +68,10 @@ namespace ByteConverter
             };
         }
 
-        public static int SizeOf(PrimType type){
-            return type switch {
+        public static int SizeOf(PrimType type)
+        {
+            return type switch
+            {
                 PrimType.Null => 0,
                 PrimType.Bool => 1,
                 PrimType.Type => 1,

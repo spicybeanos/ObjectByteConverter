@@ -40,15 +40,29 @@ namespace ByteConverter
             }
         }
 
+        private int WriteLength(long length, byte[] buffer, int start)
+        {
+            var len = EncodeLength(length);
+            for (int i = 0; i < len.Length; i++)
+            {
+                buffer[i + start] = len[i];
+            }
+            return len.Length;
+        }
+
         public byte[] EncodeValue(object value)
         {
             var type = DataType.GetType(value);
+
             if (type == PrimType.Object)
             {
                 throw new Exception($"Cannot encode an object!");
             }
 
-            if (type == PrimType.Array) { }
+            if (type == PrimType.Array)
+            {
+                return EncodeArray(value);
+            }
 
             if (type == PrimType.String)
             {
@@ -59,13 +73,21 @@ namespace ByteConverter
                 data = null;
                 return ret;
             }
+            else if (type == PrimType.Null)
+            {
+                return new byte[] { (byte)PrimType.Null };
+            }
+            else
+            {
+                return EncodeSingleValue(value, type);
+            }
         }
 
         private byte[] EncodeArray(object value)
         {
             var type = DataType.GetArrayType(value);
             byte[] data;
-            //                [array_type+token][type of the array][length of the array]
+            //                [token:array]  [token:arr_type][number of elements]
             int datagramStart = sizeof(byte) + sizeof(byte) + DataType.SizeOf(lengthEncoding);
             int length;
             switch (type)
@@ -186,29 +208,32 @@ namespace ByteConverter
                     }
                     break;
                 case PrimType.String:
-                {
-                    string[] a = (string[])value;
-                    length = a.Length;
-                    int blen = 0;
-                    byte[][] bf = new byte[length][];
-                    for (int i = 0; i < length; i++)
-                    {
-                        bf[i] = EncodeString(a[i]);
-                        blen += bf[i].Length;
-                    }
-                    data = new byte[datagramStart+blen];
-                    for (int i = 0,j=datagramStart; i < length; i++)
-                    {
-                        Buffer.BlockCopy(bf[i],0,data,j,bf[i].Length);
-                        j += bf[i].Length;
-                    }
-                }
-                break;
-                default:
-                throw new Exception($"Cannot contruct this type of array : {type.ToString()}");
-            }
 
-            data[0] = 
+                    {
+                        string[] a = (string[])value;
+                        length = a.Length;
+                        int blen = 0;
+                        byte[][] bf = new byte[length][];
+                        for (int i = 0; i < length; i++)
+                        {
+                            bf[i] = EncodeString(a[i]);
+                            blen += bf[i].Length;
+                        }
+                        data = new byte[datagramStart + blen];
+                        for (int i = 0, j = datagramStart; i < length; i++)
+                        {
+                            Buffer.BlockCopy(bf[i], 0, data, j, bf[i].Length);
+                            j += bf[i].Length;
+                        }
+                    }
+                    break;
+                default:
+                    throw new Exception($"Cannot contruct this type of array : {type.ToString()}");
+            }
+            data[0] = (byte)PrimType.Array;
+            data[1] = (byte)type;
+            WriteLength(length, data, 2);
+            return data;
         }
 
         private byte[] EncodeSingleValue(object value, PrimType type)
@@ -234,6 +259,12 @@ namespace ByteConverter
             }
         }
 
+        /// <summary>
+        /// writes the number of bytes then wites the bytes of the string encoded
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         private byte[] EncodeString(string value)
         {
             byte[] str;
